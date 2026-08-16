@@ -7,806 +7,92 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#111827">
 <title>OfficeOS</title>
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-:root{
- --bg:#f5f6f8;--card:#fff;--text:#111827;--muted:#6b7280;
- --border:#e5e7eb;--dark:#111827;--green:#15803d;
- --red:#b91c1c;--orange:#b45309;--blue:#1d4ed8;
-}
-body{
- margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
- background:var(--bg);color:var(--text);
- padding-bottom:100px;-webkit-tap-highlight-color:transparent;
-}
-header{
- background:var(--dark);color:white;padding:calc(18px + env(safe-area-inset-top)) 18px 18px;
- position:sticky;top:0;z-index:10;
-}
-.brand{font-size:24px;font-weight:800}
-.subtitle{font-size:12px;color:#cbd5e1;margin-top:2px}
-main{padding:16px;max-width:850px;margin:auto}
-h1{font-size:24px;margin:0 0 5px}
-h2{font-size:18px;margin:0 0 12px}
-p{line-height:1.45}
-.muted{color:var(--muted);font-size:13px}
-
-.card{
- background:var(--card);border:1px solid var(--border);border-radius:18px;
- padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.035)
-}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
-.stat{background:white;border:1px solid var(--border);border-radius:16px;padding:14px}
-.stat strong{font-size:25px;display:block}
-.stat span{font-size:12px;color:var(--muted)}
-
-button,.btn{
- border:0;border-radius:12px;padding:13px 15px;font-size:15px;font-weight:700;
- min-height:46px;cursor:pointer;touch-action:manipulation
-}
-.primary{background:var(--dark);color:white}
-.secondary{background:#eef2f7;color:var(--text)}
-.success{background:#dcfce7;color:#166534}
-.danger{background:#fee2e2;color:#991b1b}
-.full{width:100%}
-.row{display:flex;gap:8px;align-items:center}
-.between{justify-content:space-between}
-.wrap{flex-wrap:wrap}
-
-input,select,textarea{
- width:100%;font:inherit;padding:13px;border:1px solid #d1d5db;
- border-radius:12px;background:white;font-size:16px
-}
-textarea{min-height:95px;resize:vertical}
-label{font-size:12px;font-weight:700;color:#4b5563;display:block;margin:12px 0 5px}
-
-.item{
- border:1px solid var(--border);border-radius:14px;padding:13px;margin:9px 0;background:#fff
-}
-.item-title{font-weight:750}
-.tag{
- display:inline-block;font-size:11px;padding:5px 8px;border-radius:99px;
- background:#eef2ff;margin-top:6px
-}
-.urgent{border-left:4px solid var(--red)}
-.warning{border-left:4px solid var(--orange)}
-.good{border-left:4px solid var(--green)}
-
-nav{
- position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);
- backdrop-filter:blur(12px);border-top:1px solid var(--border);
- padding:7px 4px calc(7px + env(safe-area-inset-bottom));
- display:grid;grid-template-columns:repeat(5,1fr);z-index:20
-}
-nav button{
- background:none;color:#6b7280;padding:5px 2px;font-size:10px;
- display:flex;flex-direction:column;align-items:center;min-height:52px
-}
-nav .icon{font-size:20px;margin-bottom:2px}
-nav button.active{color:#111827}
-
-.page{display:none}.page.active{display:block}
-.fab{
- position:fixed;right:18px;bottom:88px;width:58px;height:58px;border-radius:50%;
- background:#111827;color:white;font-size:30px;box-shadow:0 8px 25px #0003;z-index:15
-}
-.overlay{
- display:none;position:fixed;inset:0;background:#0008;z-index:30;align-items:flex-end
-}
-.overlay.open{display:flex}
-.sheet{
- background:white;width:100%;max-height:90vh;overflow:auto;border-radius:22px 22px 0 0;
- padding:20px 18px calc(25px + env(safe-area-inset-bottom))
-}
-.sheet-handle{width:45px;height:5px;background:#d1d5db;border-radius:10px;margin:0 auto 15px}
-.empty{text-align:center;padding:25px;color:var(--muted)}
-.company-select{margin-top:12px;background:#263244;color:white;border-color:#374151}
-.company-select option{color:black}
-.money{font-weight:800}
+:root{--bg:#f5f6f8;--card:#fff;--text:#111827;--muted:#6b7280;--border:#e5e7eb;--dark:#111827;--green:#15803d;--red:#b91c1c;--orange:#b45309;--blue:#1d4ed8}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);padding-bottom:100px;-webkit-tap-highlight-color:transparent}
+header{background:var(--dark);color:white;padding:calc(18px + env(safe-area-inset-top)) 18px 18px;position:sticky;top:0;z-index:10}
+.brand{font-size:24px;font-weight:800}.subtitle{font-size:12px;color:#cbd5e1;margin-top:2px}
+main{padding:16px;max-width:850px;margin:auto}h1{font-size:24px;margin:0 0 5px}h2{font-size:18px;margin:0 0 12px}p{line-height:1.45}.muted{color:var(--muted);font-size:13px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.035)}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}.stat{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px}.stat strong{font-size:25px;display:block}.stat span{font-size:12px;color:var(--muted)}
+button,.btn{border:0;border-radius:12px;padding:13px 15px;font-size:15px;font-weight:700;min-height:46px;cursor:pointer;touch-action:manipulation}.primary{background:var(--dark);color:#fff}.secondary{background:#eef2f7;color:var(--text)}.success{background:#dcfce7;color:#166534}.danger{background:#fee2e2;color:#991b1b}.full{width:100%}.row{display:flex;gap:8px;align-items:center}.between{justify-content:space-between}.wrap{flex-wrap:wrap}
+input,select,textarea{width:100%;font:inherit;padding:13px;border:1px solid #d1d5db;border-radius:12px;background:#fff;font-size:16px}textarea{min-height:95px;resize:vertical}label{font-size:12px;font-weight:700;color:#4b5563;display:block;margin:12px 0 5px}
+.item{border:1px solid var(--border);border-radius:14px;padding:13px;margin:9px 0;background:#fff}.item-title{font-weight:750}.tag{display:inline-block;font-size:11px;padding:5px 8px;border-radius:99px;background:#eef2ff;margin-top:6px}.urgent{border-left:4px solid var(--red)}.warning{border-left:4px solid var(--orange)}.good{border-left:4px solid var(--green)}
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:7px 4px calc(7px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);z-index:20}nav button{background:none;color:#6b7280;padding:5px 2px;font-size:10px;display:flex;flex-direction:column;align-items:center;min-height:52px}nav .icon{font-size:20px;margin-bottom:2px}nav button.active{color:#111827}
+.page{display:none}.page.active{display:block}.fab{position:fixed;right:18px;bottom:88px;width:58px;height:58px;border-radius:50%;background:#111827;color:white;font-size:30px;box-shadow:0 8px 25px #0003;z-index:15}.overlay{display:none;position:fixed;inset:0;background:#0008;z-index:30;align-items:flex-end}.overlay.open{display:flex}.sheet{background:#fff;width:100%;max-height:90vh;overflow:auto;border-radius:22px 22px 0 0;padding:20px 18px calc(25px + env(safe-area-inset-bottom))}.sheet-handle{width:45px;height:5px;background:#d1d5db;border-radius:10px;margin:0 auto 15px}.empty{text-align:center;padding:25px;color:var(--muted)}.company-select{margin-top:12px;background:#263244;color:#fff;border-color:#374151}.company-select option{color:#000}.money{font-weight:800}
+.sync{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 9px;border-radius:99px;background:#eef2f7;color:#4b5563}.sync.ok{background:#dcfce7;color:#166534}.sync.bad{background:#fee2e2;color:#991b1b}
+#authGate{position:fixed;inset:0;z-index:9999;background:#f5f6f8;padding:calc(35px + env(safe-area-inset-top)) 20px 30px;overflow:auto}#authGate.hidden{display:none}.authBox{max-width:430px;margin:35px auto;background:#fff;border:1px solid #e5e7eb;border-radius:22px;padding:22px;box-shadow:0 8px 30px rgba(0,0,0,.08)}.authLogo{font-size:30px;font-weight:800;margin-bottom:4px}.authSub{color:#6b7280;font-size:14px;margin-bottom:22px}.authBox input{margin-bottom:12px}.authDivider{text-align:center;color:#9ca3af;margin:16px 0;font-size:12px}#authMessage{margin-top:14px;font-size:13px;line-height:1.4}
 </style>
 </head>
-
 <body>
-
-<header>
- <div class="brand">OfficeOS</div>
- <div class="subtitle">Your businesses. One office.</div>
- <select id="companySelect" class="company-select"></select>
-</header>
-
+<header><div class="brand">OfficeOS</div><div class="subtitle">Your businesses. One office.</div><select id="companySelect" class="company-select"></select></header>
 <main>
-
 <section id="dashboard" class="page active">
- <h1 id="greeting">Good morning</h1>
- <div class="muted" id="date"></div>
-
- <div class="stats">
-  <div class="stat"><strong id="newLeadCount">0</strong><span>Open Leads</span></div>
-  <div class="stat"><strong id="taskCount">0</strong><span>Open Tasks</span></div>
-  <div class="stat"><strong id="approvalCount">0</strong><span>Need Approval</span></div>
-  <div class="stat"><strong id="invoiceTotal">$0</strong><span>Open Invoices</span></div>
- </div>
-
- <div class="card">
-  <h2>✨ Daily Brief</h2>
-  <div id="dailyBrief"></div>
- </div>
-
- <div class="card">
-  <div class="row between"><h2>Needs Attention</h2><span>Today</span></div>
-  <div id="attentionList"></div>
- </div>
-
- <div class="card">
-  <h2>AI Work Completed</h2>
-  <div id="aiCompleted"></div>
- </div>
+<h1 id="greeting">Good morning</h1><div class="muted" id="date"></div>
+<div class="stats"><div class="stat"><strong id="newLeadCount">0</strong><span>Open Leads</span></div><div class="stat"><strong id="taskCount">0</strong><span>Open Tasks</span></div><div class="stat"><strong id="approvalCount">0</strong><span>Need Approval</span></div><div class="stat"><strong id="invoiceTotal">$0</strong><span>Open Invoices</span></div></div>
+<div class="card"><h2>✨ Daily Brief</h2><div id="dailyBrief"></div></div>
+<div class="card"><div class="row between"><h2>Needs Attention</h2><span>Today</span></div><div id="attentionList"></div></div>
+<div class="card"><h2>AI Work Completed</h2><div id="aiCompleted"></div></div>
 </section>
-
-<section id="leads" class="page">
- <div class="row between">
-  <div><h1>Leads</h1><div class="muted">Every opportunity in one place</div></div>
-  <button class="primary" onclick="openForm('lead')">+ Lead</button>
- </div>
- <div id="leadList"></div>
-</section>
-
-<section id="tasks" class="page">
- <div class="row between">
-  <div><h1>Tasks</h1><div class="muted">Your unified workload</div></div>
-  <button class="primary" onclick="openForm('task')">+ Task</button>
- </div>
- <div id="taskList"></div>
-</section>
-
-<section id="approvals" class="page">
- <h1>AI Approvals</h1>
- <div class="muted">Nothing sensitive happens without you.</div>
- <div id="approvalList"></div>
-</section>
-
+<section id="leads" class="page"><div class="row between"><div><h1>Leads</h1><div class="muted">Every opportunity in one place</div></div><button class="primary" onclick="openForm('lead')">+ Lead</button></div><div id="leadList"></div></section>
+<section id="tasks" class="page"><div class="row between"><div><h1>Tasks</h1><div class="muted">Your unified workload</div></div><button class="primary" onclick="openForm('task')">+ Task</button></div><div id="taskList"></div></section>
+<section id="approvals" class="page"><h1>AI Approvals</h1><div class="muted">Nothing sensitive happens without you.</div><div id="approvalList"></div></section>
 <section id="more" class="page">
- <h1>Office</h1>
-
- <div class="card">
-  <h2>Customers</h2>
-  <div id="customerList"></div>
-  <button class="secondary full" onclick="openForm('customer')">+ Add Customer</button>
- </div>
-
- <div class="card">
-  <h2>Estimates & Invoices</h2>
-  <div id="invoiceList"></div>
-  <button class="secondary full" onclick="openForm('invoice')">+ Add Estimate / Invoice</button>
- </div>
-
- <div class="card">
-  <h2>Company Playbook</h2>
-  <p class="muted">The rules OfficeOS uses when working for this company.</p>
-  <label>Business Hours</label>
-  <input id="pbHours">
-  <label>Services</label>
-  <textarea id="pbServices"></textarea>
-  <label>Service Area</label>
-  <input id="pbArea">
-  <label>Scheduling Rules</label>
-  <textarea id="pbSchedule"></textarea>
-  <label>Payment Rules</label>
-  <textarea id="pbPayment"></textarea>
-  <label>AI May Handle Automatically</label>
-  <textarea id="pbAuto"></textarea>
-  <label>Always Requires Approval</label>
-  <textarea id="pbApproval"></textarea>
-  <button class="primary full" onclick="savePlaybook()">Save Playbook</button>
- </div>
-
- <div class="card">
-  <h2>Companies</h2>
-  <div id="companyList"></div>
-  <button class="primary full" onclick="openForm('company')">+ Add Client Company</button>
- </div>
-
- <div class="card">
-  <h2>Data</h2>
-  <p class="muted">This starter version saves information on this device.</p>
-  <button class="danger full" onclick="resetDemo()">Reset Demo Data</button>
- </div>
+<h1>Office</h1>
+<div class="card"><div class="row between"><h2>Account</h2><span id="syncBadge" class="sync">Checking cloud…</span></div><div id="accountEmail" class="muted"></div><p class="muted">Your OfficeOS information is backed up to your private cloud account and can follow you to another device.</p><button class="secondary full" onclick="manualSync()">Sync Now</button><button class="danger full" style="margin-top:8px" onclick="officeSignOut()">Sign Out</button></div>
+<div class="card"><h2>Customers</h2><div id="customerList"></div><button class="secondary full" onclick="openForm('customer')">+ Add Customer</button></div>
+<div class="card"><h2>Estimates & Invoices</h2><div id="invoiceList"></div><button class="secondary full" onclick="openForm('invoice')">+ Add Estimate / Invoice</button></div>
+<div class="card"><h2>Company Playbook</h2><p class="muted">The rules OfficeOS uses when working for this company.</p><label>Business Hours</label><input id="pbHours"><label>Services</label><textarea id="pbServices"></textarea><label>Service Area</label><input id="pbArea"><label>Scheduling Rules</label><textarea id="pbSchedule"></textarea><label>Payment Rules</label><textarea id="pbPayment"></textarea><label>AI May Handle Automatically</label><textarea id="pbAuto"></textarea><label>Always Requires Approval</label><textarea id="pbApproval"></textarea><button class="primary full" onclick="savePlaybook()">Save Playbook</button></div>
+<div class="card"><h2>Companies</h2><div id="companyList"></div><button class="primary full" onclick="openForm('company')">+ Add Client Company</button></div>
+<div class="card"><h2>Data</h2><p class="muted">Cloud sync is enabled. A local copy is also kept on this device for fast loading and temporary offline use.</p><button class="danger full" onclick="resetDemo()">Reset My Data to Demo</button></div>
 </section>
-
 </main>
-
 <button class="fab" id="fab" onclick="quickAdd()">+</button>
-
-<nav>
- <button class="active" data-page="dashboard"><span class="icon">⌂</span>Home</button>
- <button data-page="leads"><span class="icon">◎</span>Leads</button>
- <button data-page="tasks"><span class="icon">✓</span>Tasks</button>
- <button data-page="approvals"><span class="icon">✦</span>Approvals</button>
- <button data-page="more"><span class="icon">☰</span>Office</button>
-</nav>
-
-<div class="overlay" id="overlay" onclick="overlayClose(event)">
- <div class="sheet" onclick="event.stopPropagation()">
-  <div class="sheet-handle"></div>
-  <div class="row between">
-   <h2 id="formTitle">Add</h2>
-   <button class="secondary" onclick="closeForm()">Close</button>
-  </div>
-  <div id="formBody"></div>
- </div>
-</div>
-
+<nav><button class="active" data-page="dashboard"><span class="icon">⌂</span>Home</button><button data-page="leads"><span class="icon">◎</span>Leads</button><button data-page="tasks"><span class="icon">✓</span>Tasks</button><button data-page="approvals"><span class="icon">✦</span>Approvals</button><button data-page="more"><span class="icon">☰</span>Office</button></nav>
+<div class="overlay" id="overlay" onclick="overlayClose(event)"><div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><div class="row between"><h2 id="formTitle">Add</h2><button class="secondary" onclick="closeForm()">Close</button></div><div id="formBody"></div></div></div>
+<div id="authGate"><div class="authBox"><div class="authLogo">OfficeOS</div><div class="authSub">Your businesses. One office.</div><label>Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com"><label>Password</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="At least 6 characters"><button class="primary full" onclick="officeSignIn()">Sign In</button><div class="authDivider">OR</div><button class="secondary full" onclick="officeSignUp()">Create My OfficeOS Account</button><div id="authMessage"></div></div></div>
 <script>
-const KEY="officeos_v1";
-const SUPABASE_URL = "https://bowrytgqbunodtmzvabp.supabase.co";
-const SUPABASE_KEY = "sb_publishable_RWtmsrw9v0dTZ2IaCF3Nbw_VVnnhLms";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-// OFFICEOS LOGIN SYSTEM
-function createAuthScreen(){
-  if(document.getElementById("authGate")) return;
-
-  const style=document.createElement("style");
-  style.textContent=`
-    #authGate{
-      position:fixed;
-      inset:0;
-      z-index:9999;
-      background:#f5f6f8;
-      padding:calc(35px + env(safe-area-inset-top)) 20px 30px;
-      overflow:auto;
-    }
-    #authGate.hidden{display:none}
-    .authBox{
-      max-width:430px;
-      margin:35px auto;
-      background:white;
-      border:1px solid #e5e7eb;
-      border-radius:22px;
-      padding:22px;
-      box-shadow:0 8px 30px rgba(0,0,0,.08);
-    }
-    .authLogo{
-      font-size:30px;
-      font-weight:800;
-      margin-bottom:4px;
-    }
-    .authSub{
-      color:#6b7280;
-      font-size:14px;
-      margin-bottom:22px;
-    }
-    .authBox input{
-      margin-bottom:12px;
-    }
-    .authDivider{
-      text-align:center;
-      color:#9ca3af;
-      margin:16px 0;
-      font-size:12px;
-    }
-    #authMessage{
-      margin-top:14px;
-      font-size:13px;
-      line-height:1.4;
-    }
-    #signOutButton{
-      margin-top:10px;
-      width:100%;
-      background:#374151;
-      color:white;
-    }
-  `;
-  document.head.appendChild(style);
-
-  const gate=document.createElement("div");
-  gate.id="authGate";
-  gate.innerHTML=`
-    <div class="authBox">
-      <div class="authLogo">OfficeOS</div>
-      <div class="authSub">Your businesses. One office.</div>
-
-      <label>Email</label>
-      <input
-        id="authEmail"
-        type="email"
-        autocomplete="email"
-        placeholder="you@example.com"
-      >
-
-      <label>Password</label>
-      <input
-        id="authPassword"
-        type="password"
-        autocomplete="current-password"
-        placeholder="At least 6 characters"
-      >
-
-      <button class="primary full" onclick="officeSignIn()">
-        Sign In
-      </button>
-
-      <div class="authDivider">OR</div>
-
-      <button class="secondary full" onclick="officeSignUp()">
-        Create My OfficeOS Account
-      </button>
-
-      <div id="authMessage"></div>
-    </div>
-  `;
-  document.body.appendChild(gate);
-}
-
-function authMessage(message,error=false){
-  const box=document.getElementById("authMessage");
-  if(!box) return;
-  box.textContent=message;
-  box.style.color=error ? "#b91c1c" : "#166534";
-}
-
-async function officeSignIn(){
-  const email=document.getElementById("authEmail").value.trim();
-  const password=document.getElementById("authPassword").value;
-
-  if(!email || !password){
-    authMessage("Enter your email and password.",true);
-    return;
-  }
-
-  authMessage("Signing you in...");
-
-  const {error}=await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if(error){
-    authMessage(error.message,true);
-    return;
-  }
-
-  authMessage("Signed in.");
-}
-
-async function officeSignUp(){
-  const email=document.getElementById("authEmail").value.trim();
-  const password=document.getElementById("authPassword").value;
-
-  if(!email){
-    authMessage("Enter your email address.",true);
-    return;
-  }
-
-  if(password.length < 6){
-    authMessage("Your password must be at least 6 characters.",true);
-    return;
-  }
-
-  authMessage("Creating your account...");
-
-  const {data,error}=await supabaseClient.auth.signUp({
-    email,
-    password,
-    options:{
-      emailRedirectTo:"https://2yfvs7fv4z-jpg.github.io/OfficeOS/"
-    }
-  });
-
-  if(error){
-    authMessage(error.message,true);
-    return;
-  }
-
-  if(!data.session){
-    authMessage(
-      "Account created. Check your email and tap the confirmation link, then return to OfficeOS."
-    );
-  }else{
-    authMessage("Account created.");
-  }
-}
-
-async function officeSignOut(){
-  await supabaseClient.auth.signOut();
-}
-
-function updateAuthScreen(session){
-  const gate=document.getElementById("authGate");
-  if(!gate) return;
-
-  if(session && session.user){
-    gate.classList.add("hidden");
-
-    let button=document.getElementById("signOutButton");
-
-    if(!button){
-      button=document.createElement("button");
-      button.id="signOutButton";
-      button.textContent="Sign Out";
-      button.onclick=officeSignOut;
-
-      const officePage=document.getElementById("more");
-      if(officePage){
-        const card=document.createElement("div");
-        card.className="card";
-        card.innerHTML="<h2>Account</h2>";
-        card.appendChild(button);
-        officePage.appendChild(card);
-      }
-    }
-  }else{
-    gate.classList.remove("hidden");
-  }
-}
-
-async function initOfficeAuth(){
-  createAuthScreen();
-
-  const {data}=await supabaseClient.auth.getSession();
-  updateAuthScreen(data.session);
-
-  supabaseClient.auth.onAuthStateChange((event,session)=>{
-    updateAuthScreen(session);
-  });
-}
-
-window.addEventListener("load",initOfficeAuth);
- 
-const demo={
- currentCompany:"c1",
- companies:[
-  {
-   id:"c1",name:"ABC Painting",
-   playbook:{
-    hours:"Monday–Friday, 8:00 AM–5:00 PM",
-    services:"Interior painting, exterior painting, cabinet painting",
-    area:"Stark County and surrounding areas",
-    schedule:"Estimates require 60 minutes. Confirm appointments 24 hours before.",
-    payment:"Invoices due upon completion unless otherwise approved.",
-    auto:"Lead acknowledgments, appointment reminders, review requests, routine estimate follow-ups",
-    approval:"Discounts, refunds, complaints, pricing changes, major schedule changes"
-   }
-  },
-  {
-   id:"c2",name:"Smith Flooring",
-   playbook:{
-    hours:"Monday–Friday, 7:30 AM–4:30 PM",
-    services:"Flooring installation and replacement",
-    area:"Canton, Massillon, North Canton",
-    schedule:"Do not promise installation dates without approval.",
-    payment:"Deposits required before material ordering.",
-    auto:"Lead acknowledgments, appointment reminders",
-    approval:"Pricing, refunds, installation changes"
-   }
-  }
- ],
- leads:[
-  {id:id(),company:"c1",name:"Sarah Miller",phone:"330-555-0144",service:"Interior painting",status:"New",value:2400},
-  {id:id(),company:"c1",name:"Robert Davis",phone:"330-555-0188",service:"Exterior painting",status:"Estimate Sent",value:7800},
-  {id:id(),company:"c2",name:"Amanda Green",phone:"330-555-0162",service:"LVP installation",status:"Contacted",value:4200}
- ],
- tasks:[
-  {id:id(),company:"c1",title:"Call Robert about estimate questions",priority:"Urgent",done:false},
-  {id:id(),company:"c1",title:"Confirm tomorrow's estimate",priority:"Normal",done:false},
-  {id:id(),company:"c2",title:"Send measurement request to Amanda",priority:"Normal",done:false}
- ],
- approvals:[
-  {id:id(),company:"c1",title:"Customer requested 10% discount",detail:"Robert Davis asked whether a discount is available on his $7,800 estimate."},
-  {id:id(),company:"c2",title:"Installation date change",detail:"Customer requested moving installation to Friday. Playbook requires approval."}
- ],
- customers:[
-  {id:id(),company:"c1",name:"Emily Johnson",phone:"330-555-0121",email:"emily@example.com"},
-  {id:id(),company:"c2",name:"Michael Brown",phone:"330-555-0190",email:"michael@example.com"}
- ],
- invoices:[
-  {id:id(),company:"c1",customer:"Emily Johnson",type:"Invoice",amount:1250,status:"Open"},
-  {id:id(),company:"c1",customer:"Robert Davis",type:"Estimate",amount:7800,status:"Sent"},
-  {id:id(),company:"c2",customer:"Michael Brown",type:"Invoice",amount:900,status:"Overdue"}
- ],
- ai:[
-  {id:id(),company:"c1",text:"Sent appointment reminder to Sarah Miller"},
-  {id:id(),company:"c1",text:"Categorized 2 new inquiries"},
-  {id:id(),company:"c2",text:"Created follow-up task for flooring estimate"}
- ]
-};
-
+const KEY="officeos_v2";
+const SUPABASE_URL="https://bowrytgqbunodtmzvabp.supabase.co";
+const SUPABASE_KEY="sb_publishable_RWtmsrw9v0dTZ2IaCF3Nbw_VVnnhLms";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let cloudRowId=null, cloudReady=false, saving=false;
 function id(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
-function load(){
- try{
-  const x=JSON.parse(localStorage.getItem(KEY));
-  return x&&x.companies?x:structuredClone(demo)
- }catch(e){return structuredClone(demo)}
-}
-let db=load();
-
-function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
-function current(){return db.currentCompany}
-function company(){return db.companies.find(x=>x.id===current())||db.companies[0]}
-function scoped(arr){return arr.filter(x=>x.company===current())}
-function money(n){return "$"+Number(n||0).toLocaleString()}
-
-function render(){
- renderCompanySelect();
- renderDashboard();
- renderLeads();
- renderTasks();
- renderApprovals();
- renderMore();
-}
-
-function renderCompanySelect(){
- const s=document.getElementById("companySelect");
- s.innerHTML='<option value="all">All Companies</option>'+
- db.companies.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("");
- s.value=db.currentCompany;
-}
-
-function relevant(arr){
- return current()==="all"?arr:scoped(arr)
-}
-
-function renderDashboard(){
- const leads=relevant(db.leads);
- const tasks=relevant(db.tasks).filter(x=>!x.done);
- const approvals=relevant(db.approvals);
- const invoices=relevant(db.invoices).filter(x=>x.type==="Invoice"&&x.status!=="Paid");
-
- newLeadCount.textContent=leads.filter(x=>x.status!=="Won"&&x.status!=="Lost").length;
- taskCount.textContent=tasks.length;
- approvalCount.textContent=approvals.length;
- invoiceTotal.textContent=money(invoices.reduce((a,b)=>a+Number(b.amount),0));
-
- const hour=new Date().getHours();
- greeting.textContent=hour<12?"Good morning":hour<18?"Good afternoon":"Good evening";
- date.textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});
-
- dailyBrief.innerHTML=`
-  <p>You have <b>${tasks.length} open tasks</b>, <b>${approvals.length} AI decisions</b> waiting for you,
-  and <b>${leads.length} leads</b> currently being tracked.</p>
-  <p class="muted">OfficeOS is keeping everything across your companies in one place.</p>`;
-
- const attention=[
-  ...tasks.filter(x=>x.priority==="Urgent").map(x=>({t:x.title,c:x.company,type:"urgent"})),
-  ...approvals.map(x=>({t:x.title,c:x.company,type:"warning"}))
- ];
- attentionList.innerHTML=attention.length?attention.map(x=>`
-  <div class="item ${x.type}">
-   <div class="item-title">${esc(x.t)}</div>
-   <span class="tag">${esc(companyName(x.c))}</span>
-  </div>`).join(""):'<div class="empty">Nothing urgent 🎉</div>';
-
- const ai=relevant(db.ai).slice(-5).reverse();
- aiCompleted.innerHTML=ai.length?ai.map(x=>`
-  <div class="item good">✓ ${esc(x.text)}<br><span class="tag">${esc(companyName(x.company))}</span></div>
- `).join(""):'<div class="empty">No automated work yet.</div>';
-}
-
-function renderLeads(){
- const a=relevant(db.leads);
- leadList.innerHTML=a.length?a.map(x=>`
- <div class="item">
-  <div class="row between">
-   <div>
-    <div class="item-title">${esc(x.name)}</div>
-    <div class="muted">${esc(x.service||"No service entered")}</div>
-   </div>
-   <div class="money">${money(x.value)}</div>
-  </div>
-  <span class="tag">${esc(x.status)}</span>
-  ${current()==="all"?`<span class="tag">${esc(companyName(x.company))}</span>`:""}
-  <div class="row wrap" style="margin-top:10px">
-   <button class="secondary" onclick="advanceLead('${x.id}')">Update Status</button>
-   <button class="danger" onclick="removeItem('leads','${x.id}')">Delete</button>
-  </div>
- </div>`).join(""):'<div class="empty">No leads yet.</div>';
-}
-
-function renderTasks(){
- const a=relevant(db.tasks).sort((a,b)=>a.done-b.done);
- taskList.innerHTML=a.length?a.map(x=>`
- <div class="item ${x.priority==="Urgent"?"urgent":""}" style="${x.done?"opacity:.5":""}">
-  <div class="item-title">${x.done?"✓ ":""}${esc(x.title)}</div>
-  <span class="tag">${esc(x.priority)}</span>
-  ${current()==="all"?`<span class="tag">${esc(companyName(x.company))}</span>`:""}
-  <div class="row" style="margin-top:10px">
-   <button class="${x.done?"secondary":"success"}" onclick="toggleTask('${x.id}')">${x.done?"Reopen":"Complete"}</button>
-   <button class="danger" onclick="removeItem('tasks','${x.id}')">Delete</button>
-  </div>
- </div>`).join(""):'<div class="empty">No tasks.</div>';
-}
-
-function renderApprovals(){
- const a=relevant(db.approvals);
- approvalList.innerHTML=a.length?a.map(x=>`
- <div class="card warning">
-  <div class="item-title">${esc(x.title)}</div>
-  <p>${esc(x.detail)}</p>
-  <span class="tag">${esc(companyName(x.company))}</span>
-  <div class="row" style="margin-top:12px">
-   <button class="success" onclick="approval('${x.id}',true)">Approve</button>
-   <button class="danger" onclick="approval('${x.id}',false)">Reject</button>
-  </div>
- </div>`).join(""):'<div class="empty">Nothing waiting for approval. ✓</div>';
-}
-
-function renderMore(){
- const customers=relevant(db.customers);
- customerList.innerHTML=customers.length?customers.map(x=>`
-  <div class="item"><b>${esc(x.name)}</b><div class="muted">${esc(x.phone||"")} ${x.email?"• "+esc(x.email):""}</div></div>
- `).join(""):'<div class="empty">No customers yet.</div>';
-
- const inv=relevant(db.invoices);
- invoiceList.innerHTML=inv.length?inv.map(x=>`
-  <div class="item">
-   <div class="row between"><b>${esc(x.customer)}</b><span class="money">${money(x.amount)}</span></div>
-   <div class="muted">${esc(x.type)} • ${esc(x.status)}</div>
-  </div>`).join(""):'<div class="empty">No estimates or invoices.</div>';
-
- companyList.innerHTML=db.companies.map(x=>`
-  <div class="item"><b>${esc(x.name)}</b></div>`).join("");
-
- if(current()!=="all"){
-  const p=company().playbook||{};
-  pbHours.value=p.hours||"";
-  pbServices.value=p.services||"";
-  pbArea.value=p.area||"";
-  pbSchedule.value=p.schedule||"";
-  pbPayment.value=p.payment||"";
-  pbAuto.value=p.auto||"";
-  pbApproval.value=p.approval||"";
- }else{
-  ["pbHours","pbServices","pbArea","pbSchedule","pbPayment","pbAuto","pbApproval"].forEach(i=>document.getElementById(i).value="Select one company above to edit its playbook.");
- }
-}
-
-function companyName(id){
- const c=db.companies.find(x=>x.id===id);
- return c?c.name:"Unknown";
-}
-
-companySelect.addEventListener("change",e=>{
- db.currentCompany=e.target.value;save()
-});
-
-document.querySelectorAll("nav button").forEach(b=>{
- b.onclick=()=>{
-  document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
-  document.getElementById(b.dataset.page).classList.add("active");
-  fab.style.display=["dashboard","leads","tasks"].includes(b.dataset.page)?"block":"none";
-  window.scrollTo({top:0,behavior:"smooth"});
- }
-});
-
-function quickAdd(){
- const active=document.querySelector("nav button.active").dataset.page;
- openForm(active==="leads"?"lead":active==="tasks"?"task":"lead")
-}
-
-function openForm(type){
- overlay.classList.add("open");
- const cOptions=db.companies.map(c=>`<option value="${c.id}" ${c.id===current()?"selected":""}>${esc(c.name)}</option>`).join("");
-
- if(type==="lead"){
-  formTitle.textContent="Add Lead";
-  formBody.innerHTML=`
-   <label>Company</label><select id="fCompany">${cOptions}</select>
-   <label>Customer Name</label><input id="fName" placeholder="Sarah Miller">
-   <label>Phone</label><input id="fPhone" type="tel" placeholder="330-555-1234">
-   <label>Service Needed</label><input id="fService" placeholder="Kitchen remodel">
-   <label>Potential Value</label><input id="fValue" type="number" inputmode="decimal" placeholder="2500">
-   <label>Status</label><select id="fStatus"><option>New</option><option>Contacted</option><option>Estimate Scheduled</option><option>Estimate Sent</option><option>Won</option><option>Lost</option></select>
-   <button class="primary full" style="margin-top:16px" onclick="addLead()">Save Lead</button>`;
- }
- if(type==="task"){
-  formTitle.textContent="Add Task";
-  formBody.innerHTML=`
-   <label>Company</label><select id="fCompany">${cOptions}</select>
-   <label>Task</label><input id="fTitle" placeholder="Follow up with customer">
-   <label>Priority</label><select id="fPriority"><option>Normal</option><option>Urgent</option></select>
-   <button class="primary full" style="margin-top:16px" onclick="addTask()">Save Task</button>`;
- }
- if(type==="customer"){
-  formTitle.textContent="Add Customer";
-  formBody.innerHTML=`
-   <label>Company</label><select id="fCompany">${cOptions}</select>
-   <label>Name</label><input id="fName">
-   <label>Phone</label><input id="fPhone" type="tel">
-   <label>Email</label><input id="fEmail" type="email">
-   <button class="primary full" style="margin-top:16px" onclick="addCustomer()">Save Customer</button>`;
- }
- if(type==="invoice"){
-  formTitle.textContent="Add Estimate / Invoice";
-  formBody.innerHTML=`
-   <label>Company</label><select id="fCompany">${cOptions}</select>
-   <label>Customer</label><input id="fCustomer">
-   <label>Type</label><select id="fType"><option>Estimate</option><option>Invoice</option></select>
-   <label>Amount</label><input id="fAmount" type="number" inputmode="decimal">
-   <label>Status</label><select id="fInvStatus"><option>Draft</option><option>Sent</option><option>Open</option><option>Overdue</option><option>Paid</option></select>
-   <button class="primary full" style="margin-top:16px" onclick="addInvoice()">Save</button>`;
- }
- if(type==="company"){
-  formTitle.textContent="Add Client Company";
-  formBody.innerHTML=`
-   <label>Company Name</label><input id="fName" placeholder="Johnson Remodeling">
-   <button class="primary full" style="margin-top:16px" onclick="addCompany()">Add Company</button>`;
- }
-}
-
-function closeForm(){overlay.classList.remove("open")}
-function overlayClose(e){if(e.target===overlay)closeForm()}
-
-function addLead(){
- if(!fName.value.trim())return alert("Enter the customer's name.");
- db.leads.push({id:id(),company:fCompany.value,name:fName.value.trim(),phone:fPhone.value.trim(),service:fService.value.trim(),status:fStatus.value,value:Number(fValue.value||0)});
- closeForm();save()
-}
-function addTask(){
- if(!fTitle.value.trim())return alert("Enter a task.");
- db.tasks.push({id:id(),company:fCompany.value,title:fTitle.value.trim(),priority:fPriority.value,done:false});
- closeForm();save()
-}
-function addCustomer(){
- if(!fName.value.trim())return alert("Enter a customer name.");
- db.customers.push({id:id(),company:fCompany.value,name:fName.value.trim(),phone:fPhone.value.trim(),email:fEmail.value.trim()});
- closeForm();save()
-}
-function addInvoice(){
- if(!fCustomer.value.trim())return alert("Enter a customer.");
- db.invoices.push({id:id(),company:fCompany.value,customer:fCustomer.value.trim(),type:fType.value,amount:Number(fAmount.value||0),status:fInvStatus.value});
- closeForm();save()
-}
-function addCompany(){
- if(!fName.value.trim())return alert("Enter a company name.");
- const newId=id();
- db.companies.push({id:newId,name:fName.value.trim(),playbook:{hours:"",services:"",area:"",schedule:"",payment:"",auto:"",approval:""}});
- db.currentCompany=newId;
- closeForm();save()
-}
-
-function toggleTask(x){
- const t=db.tasks.find(i=>i.id===x);if(t)t.done=!t.done;save()
-}
-function removeItem(table,x){
- if(confirm("Delete this item?")){db[table]=db[table].filter(i=>i.id!==x);save()}
-}
-function advanceLead(x){
- const statuses=["New","Contacted","Estimate Scheduled","Estimate Sent","Won","Lost"];
- const l=db.leads.find(i=>i.id===x);
- if(!l)return;
- const next=prompt("Enter status:\\n"+statuses.join("\\n"),l.status);
- if(next&&statuses.includes(next)){l.status=next;save()}
-}
-function approval(x,yes){
- const a=db.approvals.find(i=>i.id===x);
- if(!a)return;
- db.ai.push({id:id(),company:a.company,text:(yes?"Approved: ":"Rejected: ")+a.title});
- db.approvals=db.approvals.filter(i=>i.id!==x);
- save()
-}
-function savePlaybook(){
- if(current()==="all")return alert("Select one company first.");
- company().playbook={
-  hours:pbHours.value,services:pbServices.value,area:pbArea.value,
-  schedule:pbSchedule.value,payment:pbPayment.value,
-  auto:pbAuto.value,approval:pbApproval.value
- };
- save();alert("Playbook saved.")
-}
-function resetDemo(){
- if(confirm("Reset all information back to the demo?")){
-  localStorage.removeItem(KEY);db=structuredClone(demo);save()
- }
-}
-function esc(s){
- return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))
-}
-
-render();
+const demo={currentCompany:"c1",companies:[{id:"c1",name:"ABC Painting",playbook:{hours:"Monday–Friday, 8:00 AM–5:00 PM",services:"Interior painting, exterior painting, cabinet painting",area:"Stark County and surrounding areas",schedule:"Estimates require 60 minutes. Confirm appointments 24 hours before.",payment:"Invoices due upon completion unless otherwise approved.",auto:"Lead acknowledgments, appointment reminders, review requests, routine estimate follow-ups",approval:"Discounts, refunds, complaints, pricing changes, major schedule changes"}},{id:"c2",name:"Smith Flooring",playbook:{hours:"Monday–Friday, 7:30 AM–4:30 PM",services:"Flooring installation and replacement",area:"Canton, Massillon, North Canton",schedule:"Do not promise installation dates without approval.",payment:"Deposits required before material ordering.",auto:"Lead acknowledgments, appointment reminders",approval:"Pricing, refunds, installation changes"}}],leads:[{id:id(),company:"c1",name:"Sarah Miller",phone:"330-555-0144",service:"Interior painting",status:"New",value:2400},{id:id(),company:"c1",name:"Robert Davis",phone:"330-555-0188",service:"Exterior painting",status:"Estimate Sent",value:7800},{id:id(),company:"c2",name:"Amanda Green",phone:"330-555-0162",service:"LVP installation",status:"Contacted",value:4200}],tasks:[{id:id(),company:"c1",title:"Call Robert about estimate questions",priority:"Urgent",done:false},{id:id(),company:"c1",title:"Confirm tomorrow's estimate",priority:"Normal",done:false},{id:id(),company:"c2",title:"Send measurement request to Amanda",priority:"Normal",done:false}],approvals:[{id:id(),company:"c1",title:"Customer requested 10% discount",detail:"Robert Davis asked whether a discount is available on his $7,800 estimate."},{id:id(),company:"c2",title:"Installation date change",detail:"Customer requested moving installation to Friday. Playbook requires approval."}],customers:[{id:id(),company:"c1",name:"Emily Johnson",phone:"330-555-0121",email:"emily@example.com"},{id:id(),company:"c2",name:"Michael Brown",phone:"330-555-0190",email:"michael@example.com"}],invoices:[{id:id(),company:"c1",customer:"Emily Johnson",type:"Invoice",amount:1250,status:"Open"},{id:id(),company:"c1",customer:"Robert Davis",type:"Estimate",amount:7800,status:"Sent"},{id:id(),company:"c2",customer:"Michael Brown",type:"Invoice",amount:900,status:"Overdue"}],ai:[{id:id(),company:"c1",text:"Sent appointment reminder to Sarah Miller"},{id:id(),company:"c1",text:"Categorized 2 new inquiries"},{id:id(),company:"c2",text:"Created follow-up task for flooring estimate"}]};
+function localLoad(){try{const newer=JSON.parse(localStorage.getItem(KEY));if(newer&&newer.companies)return newer;const older=JSON.parse(localStorage.getItem("officeos_v1"));if(older&&older.companies)return older}catch(e){}return structuredClone(demo)}
+let db=localLoad();
+function setSync(text,state=""){const b=document.getElementById("syncBadge");if(!b)return;b.textContent=text;b.className="sync"+(state?" "+state:"")}
+async function cloudLoad(user){setSync("Loading cloud…");const {data,error}=await supabaseClient.from("officeos_data").select("id,data,updated_at").eq("user_id",user.id).order("updated_at",{ascending:false}).limit(1).maybeSingle();if(error){console.error(error);setSync("Cloud unavailable","bad");cloudReady=false;render();return}if(data&&data.data&&data.data.companies){cloudRowId=data.id;db=data.data;localStorage.setItem(KEY,JSON.stringify(db));cloudReady=true;setSync("Cloud synced","ok");render();return}cloudReady=true;render();await cloudSave(user)}
+async function cloudSave(userOverride=null){if(saving)return;const user=userOverride||((await supabaseClient.auth.getUser()).data.user);if(!user){cloudReady=false;return}saving=true;setSync("Saving…");localStorage.setItem(KEY,JSON.stringify(db));let result;if(cloudRowId){result=await supabaseClient.from("officeos_data").update({data:db,updated_at:new Date().toISOString()}).eq("id",cloudRowId).eq("user_id",user.id).select("id").single()}else{result=await supabaseClient.from("officeos_data").insert({user_id:user.id,data:db,updated_at:new Date().toISOString()}).select("id").single();if(result.data)cloudRowId=result.data.id}saving=false;if(result.error){console.error(result.error);setSync("Saved locally","bad")}else{cloudReady=true;setSync("Cloud synced","ok")}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render();cloudSave()}
+async function manualSync(){const {data}=await supabaseClient.auth.getUser();if(!data.user)return;await cloudSave(data.user);alert("OfficeOS is synced to your cloud account.")}
+function authMessage(message,error=false){const box=document.getElementById("authMessage");box.textContent=message;box.style.color=error?"#b91c1c":"#166534"}
+async function officeSignIn(){const email=authEmail.value.trim(),password=authPassword.value;if(!email||!password)return authMessage("Enter your email and password.",true);authMessage("Signing you in...");const {error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)return authMessage(error.message,true)}
+async function officeSignUp(){const email=authEmail.value.trim(),password=authPassword.value;if(!email)return authMessage("Enter your email address.",true);if(password.length<6)return authMessage("Your password must be at least 6 characters.",true);authMessage("Creating your account...");const {data,error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:"https://2yfvs7fv4z-jpg.github.io/OfficeOS/"}});if(error)return authMessage(error.message,true);authMessage(data.session?"Account created.":"Account created. Check your email and tap the confirmation link, then return to OfficeOS.")}
+async function officeSignOut(){await supabaseClient.auth.signOut();cloudRowId=null;cloudReady=false;document.getElementById("authGate").classList.remove("hidden")}
+async function handleSession(session){const gate=document.getElementById("authGate");if(session&&session.user){gate.classList.add("hidden");accountEmail.textContent=session.user.email||"Signed in";await cloudLoad(session.user)}else{gate.classList.remove("hidden");accountEmail.textContent="";setSync("Not signed in")}}
+async function initAuth(){const {data}=await supabaseClient.auth.getSession();await handleSession(data.session);supabaseClient.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_IN")handleSession(session);if(event==="SIGNED_OUT")handleSession(null)})}
+function current(){return db.currentCompany}function company(){return db.companies.find(x=>x.id===current())||db.companies[0]}function scoped(arr){return arr.filter(x=>x.company===current())}function relevant(arr){return current()==="all"?arr:scoped(arr)}function money(n){return "$"+Number(n||0).toLocaleString()}
+function render(){renderCompanySelect();renderDashboard();renderLeads();renderTasks();renderApprovals();renderMore()}
+function renderCompanySelect(){const s=companySelect;s.innerHTML='<option value="all">All Companies</option>'+db.companies.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("");s.value=db.currentCompany}
+function renderDashboard(){const leads=relevant(db.leads),tasks=relevant(db.tasks).filter(x=>!x.done),approvals=relevant(db.approvals),invoices=relevant(db.invoices).filter(x=>x.type==="Invoice"&&x.status!=="Paid");newLeadCount.textContent=leads.filter(x=>x.status!=="Won"&&x.status!=="Lost").length;taskCount.textContent=tasks.length;approvalCount.textContent=approvals.length;invoiceTotal.textContent=money(invoices.reduce((a,b)=>a+Number(b.amount),0));const hour=new Date().getHours();greeting.textContent=hour<12?"Good morning":hour<18?"Good afternoon":"Good evening";date.textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});dailyBrief.innerHTML=`<p>You have <b>${tasks.length} open tasks</b>, <b>${approvals.length} AI decisions</b> waiting for you, and <b>${leads.length} leads</b> currently being tracked.</p><p class="muted">OfficeOS is keeping everything across your companies in one place.</p>`;const attention=[...tasks.filter(x=>x.priority==="Urgent").map(x=>({t:x.title,c:x.company,type:"urgent"})),...approvals.map(x=>({t:x.title,c:x.company,type:"warning"}))];attentionList.innerHTML=attention.length?attention.map(x=>`<div class="item ${x.type}"><div class="item-title">${esc(x.t)}</div><span class="tag">${esc(companyName(x.c))}</span></div>`).join(""):'<div class="empty">Nothing urgent 🎉</div>';const ai=relevant(db.ai).slice(-5).reverse();aiCompleted.innerHTML=ai.length?ai.map(x=>`<div class="item good">✓ ${esc(x.text)}<br><span class="tag">${esc(companyName(x.company))}</span></div>`).join(""):'<div class="empty">No automated work yet.</div>'}
+function renderLeads(){const a=relevant(db.leads);leadList.innerHTML=a.length?a.map(x=>`<div class="item"><div class="row between"><div><div class="item-title">${esc(x.name)}</div><div class="muted">${esc(x.phone||"")} ${x.phone&&x.service?"• ":""}${esc(x.service||"No service entered")}</div></div><div class="money">${money(x.value)}</div></div><span class="tag">${esc(x.status)}</span>${current()==="all"?`<span class="tag">${esc(companyName(x.company))}</span>`:""}<div class="row wrap" style="margin-top:10px"><button class="secondary" onclick="advanceLead('${x.id}')">Update Status</button><button class="danger" onclick="removeItem('leads','${x.id}')">Delete</button></div></div>`).join(""):'<div class="empty">No leads yet.</div>'}
+function renderTasks(){const a=[...relevant(db.tasks)].sort((a,b)=>a.done-b.done);taskList.innerHTML=a.length?a.map(x=>`<div class="item ${x.priority==="Urgent"?"urgent":""}" style="${x.done?"opacity:.5":""}"><div class="item-title">${x.done?"✓ ":""}${esc(x.title)}</div><span class="tag">${esc(x.priority)}</span>${current()==="all"?`<span class="tag">${esc(companyName(x.company))}</span>`:""}<div class="row" style="margin-top:10px"><button class="${x.done?"secondary":"success"}" onclick="toggleTask('${x.id}')">${x.done?"Reopen":"Complete"}</button><button class="danger" onclick="removeItem('tasks','${x.id}')">Delete</button></div></div>`).join(""):'<div class="empty">No tasks.</div>'}
+function renderApprovals(){const a=relevant(db.approvals);approvalList.innerHTML=a.length?a.map(x=>`<div class="card warning"><div class="item-title">${esc(x.title)}</div><p>${esc(x.detail)}</p><span class="tag">${esc(companyName(x.company))}</span><div class="row" style="margin-top:12px"><button class="success" onclick="approval('${x.id}',true)">Approve</button><button class="danger" onclick="approval('${x.id}',false)">Reject</button></div></div>`).join(""):'<div class="empty">Nothing waiting for approval. ✓</div>'}
+function renderMore(){const customers=relevant(db.customers);customerList.innerHTML=customers.length?customers.map(x=>`<div class="item"><div class="row between"><div><b>${esc(x.name)}</b><div class="muted">${esc(x.phone||"")} ${x.email?"• "+esc(x.email):""}</div></div><button class="danger" onclick="removeItem('customers','${x.id}')">Delete</button></div></div>`).join(""):'<div class="empty">No customers yet.</div>';const inv=relevant(db.invoices);invoiceList.innerHTML=inv.length?inv.map(x=>`<div class="item"><div class="row between"><b>${esc(x.customer)}</b><span class="money">${money(x.amount)}</span></div><div class="muted">${esc(x.type)} • ${esc(x.status)}</div><button class="danger" style="margin-top:8px" onclick="removeItem('invoices','${x.id}')">Delete</button></div>`).join(""):'<div class="empty">No estimates or invoices.</div>';companyList.innerHTML=db.companies.map(x=>`<div class="item"><b>${esc(x.name)}</b></div>`).join("");if(current()!=="all"){const p=company().playbook||{};pbHours.value=p.hours||"";pbServices.value=p.services||"";pbArea.value=p.area||"";pbSchedule.value=p.schedule||"";pbPayment.value=p.payment||"";pbAuto.value=p.auto||"";pbApproval.value=p.approval||""}else{["pbHours","pbServices","pbArea","pbSchedule","pbPayment","pbAuto","pbApproval"].forEach(i=>document.getElementById(i).value="Select one company above to edit its playbook.")}}
+function companyName(cid){const c=db.companies.find(x=>x.id===cid);return c?c.name:"Unknown"}
+companySelect.addEventListener("change",e=>{db.currentCompany=e.target.value;save()});document.querySelectorAll("nav button").forEach(b=>{b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(b.dataset.page).classList.add("active");fab.style.display=["dashboard","leads","tasks"].includes(b.dataset.page)?"block":"none";window.scrollTo({top:0,behavior:"smooth"})}})
+function quickAdd(){const active=document.querySelector("nav button.active").dataset.page;openForm(active==="leads"?"lead":active==="tasks"?"task":"lead")}
+function openForm(type){overlay.classList.add("open");const cOptions=db.companies.map(c=>`<option value="${c.id}" ${c.id===current()?"selected":""}>${esc(c.name)}</option>`).join("");if(type==="lead"){formTitle.textContent="Add Lead";formBody.innerHTML=`<label>Company</label><select id="fCompany">${cOptions}</select><label>Customer Name</label><input id="fName" placeholder="Sarah Miller"><label>Phone</label><input id="fPhone" type="tel" placeholder="330-555-1234"><label>Service Needed</label><input id="fService" placeholder="Kitchen remodel"><label>Potential Value</label><input id="fValue" type="number" inputmode="decimal" placeholder="2500"><label>Status</label><select id="fStatus"><option>New</option><option>Contacted</option><option>Estimate Scheduled</option><option>Estimate Sent</option><option>Won</option><option>Lost</option></select><button class="primary full" style="margin-top:16px" onclick="addLead()">Save Lead</button>`}if(type==="task"){formTitle.textContent="Add Task";formBody.innerHTML=`<label>Company</label><select id="fCompany">${cOptions}</select><label>Task</label><input id="fTitle" placeholder="Follow up with customer"><label>Priority</label><select id="fPriority"><option>Normal</option><option>Urgent</option></select><button class="primary full" style="margin-top:16px" onclick="addTask()">Save Task</button>`}if(type==="customer"){formTitle.textContent="Add Customer";formBody.innerHTML=`<label>Company</label><select id="fCompany">${cOptions}</select><label>Name</label><input id="fName"><label>Phone</label><input id="fPhone" type="tel"><label>Email</label><input id="fEmail" type="email"><button class="primary full" style="margin-top:16px" onclick="addCustomer()">Save Customer</button>`}if(type==="invoice"){formTitle.textContent="Add Estimate / Invoice";formBody.innerHTML=`<label>Company</label><select id="fCompany">${cOptions}</select><label>Customer</label><input id="fCustomer"><label>Type</label><select id="fType"><option>Estimate</option><option>Invoice</option></select><label>Amount</label><input id="fAmount" type="number" inputmode="decimal"><label>Status</label><select id="fInvStatus"><option>Draft</option><option>Sent</option><option>Open</option><option>Overdue</option><option>Paid</option></select><button class="primary full" style="margin-top:16px" onclick="addInvoice()">Save</button>`}if(type==="company"){formTitle.textContent="Add Client Company";formBody.innerHTML=`<label>Company Name</label><input id="fName" placeholder="Johnson Remodeling"><button class="primary full" style="margin-top:16px" onclick="addCompany()">Add Company</button>`}}
+function closeForm(){overlay.classList.remove("open")}function overlayClose(e){if(e.target===overlay)closeForm()}
+function addLead(){if(!fName.value.trim())return alert("Enter the customer's name.");db.leads.push({id:id(),company:fCompany.value,name:fName.value.trim(),phone:fPhone.value.trim(),service:fService.value.trim(),status:fStatus.value,value:Number(fValue.value||0)});closeForm();save()}function addTask(){if(!fTitle.value.trim())return alert("Enter a task.");db.tasks.push({id:id(),company:fCompany.value,title:fTitle.value.trim(),priority:fPriority.value,done:false});closeForm();save()}function addCustomer(){if(!fName.value.trim())return alert("Enter a customer name.");db.customers.push({id:id(),company:fCompany.value,name:fName.value.trim(),phone:fPhone.value.trim(),email:fEmail.value.trim()});closeForm();save()}function addInvoice(){if(!fCustomer.value.trim())return alert("Enter a customer.");db.invoices.push({id:id(),company:fCompany.value,customer:fCustomer.value.trim(),type:fType.value,amount:Number(fAmount.value||0),status:fInvStatus.value});closeForm();save()}function addCompany(){if(!fName.value.trim())return alert("Enter a company name.");const newId=id();db.companies.push({id:newId,name:fName.value.trim(),playbook:{hours:"",services:"",area:"",schedule:"",payment:"",auto:"",approval:""}});db.currentCompany=newId;closeForm();save()}
+function toggleTask(x){const t=db.tasks.find(i=>i.id===x);if(t)t.done=!t.done;save()}function removeItem(table,x){if(confirm("Delete this item?")){db[table]=db[table].filter(i=>i.id!==x);save()}}function advanceLead(x){const statuses=["New","Contacted","Estimate Scheduled","Estimate Sent","Won","Lost"],l=db.leads.find(i=>i.id===x);if(!l)return;const next=prompt("Enter status:\n"+statuses.join("\n"),l.status);if(next&&statuses.includes(next)){l.status=next;save()}}function approval(x,yes){const a=db.approvals.find(i=>i.id===x);if(!a)return;db.ai.push({id:id(),company:a.company,text:(yes?"Approved: ":"Rejected: ")+a.title});db.approvals=db.approvals.filter(i=>i.id!==x);save()}
+function savePlaybook(){if(current()==="all")return alert("Select one company first.");company().playbook={hours:pbHours.value,services:pbServices.value,area:pbArea.value,schedule:pbSchedule.value,payment:pbPayment.value,auto:pbAuto.value,approval:pbApproval.value};save();alert("Playbook saved.")}
+async function resetDemo(){if(!confirm("Reset all of your OfficeOS information back to the demo?"))return;db=structuredClone(demo);localStorage.setItem(KEY,JSON.stringify(db));render();await cloudSave();alert("Your data was reset and synced.")}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+render();initAuth();
 </script>
-
 </body>
 </html>
