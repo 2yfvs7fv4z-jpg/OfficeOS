@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#111827">
 <title>OfficeOS</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
 <header><div class="brand">OfficeOS</div><div class="subtitle">Your businesses. One office.</div><select id="companySelect" class="company-select"></select></header>
@@ -22,7 +22,7 @@
 </section>
 <section id="leads" class="page"><div class="row between"><div><h1>Leads</h1><div class="muted">From inquiry to booked job</div></div><button class="primary" onclick="openForm('lead')">+ Lead</button></div><div class="pipeline" id="leadFilters"></div><div id="leadList"></div></section>
 <section id="jobs" class="page"><div class="row between"><div><h1>Jobs</h1><div class="muted">Scheduled work and job progress</div></div><button class="primary" onclick="openForm('job')">+ Job</button></div><div class="pipeline" id="jobFilters"></div><div id="jobList"></div></section>
-<section id="calendar" class="page"><div class="row between"><div><h1>Calendar</h1><div class="muted">Estimates, installs and follow-ups</div></div><button class="primary" onclick="openForm('event')">+ Event</button></div><div id="calendarList"></div></section>
+<section id="calendar" class="page"><div class="row between"><div><h1>Calendar</h1><div class="muted">Month view, estimates, installs and follow-ups</div></div><button class="primary" onclick="openForm('event')">+ Event</button></div><div id="calendarList"></div></section>
 <section id="more" class="page"><h1>Office</h1>
 <div class="card"><div class="row between"><h2>Account</h2><span id="syncBadge" class="sync">Checking cloud…</span></div><div id="accountEmail" class="muted"></div><p class="muted">Your OfficeOS information is backed up to your private cloud account.</p><button class="secondary full" onclick="manualSync()">Sync Now</button><button class="danger full" style="margin-top:8px" onclick="officeSignOut()">Sign Out</button></div>
 <div class="card"><h2>Customers</h2><div id="customerList"></div><button class="secondary full" onclick="openForm('customer')">+ Add Customer</button></div>
@@ -41,5 +41,6 @@
 <div id="authGate" class="gate"><div class="gatebox"><div class="logo">OfficeOS</div><div class="muted">Your businesses. One office.</div><label>Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com"><label>Password</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="At least 6 characters"><button class="primary full" onclick="officeSignIn()">Sign In</button><div style="text-align:center;color:#9ca3af;margin:16px 0;font-size:12px">OR</div><button class="secondary full" onclick="officeSignUp()">Create My OfficeOS Account</button><div id="authMessage" style="margin-top:14px;font-size:13px"></div></div></div>
 <div id="setupGate" class="gate hidden"><div class="gatebox"><div class="step">Business setup</div><div class="logo">Build your office</div><p class="muted">Tell OfficeOS how this business works. You can change this later.</p><label>Business Name</label><input id="setupName"><label>Services</label><textarea id="setupServices"></textarea><label>Business Hours</label><input id="setupHours"><label>Service Area</label><input id="setupArea"><label>Scheduling Rules</label><textarea id="setupSchedule"></textarea><label>Payment Rules</label><textarea id="setupPayment"></textarea><label>OfficeOS May Handle Automatically</label><textarea id="setupAuto"></textarea><label>Always Requires Your Approval</label><textarea id="setupApproval"></textarea><button class="primary full" style="margin-top:18px" onclick="finishSetup()">Save Business Setup</button><button id="setupCancel" class="secondary full" style="margin-top:8px;display:none" onclick="hideSetup()">Cancel</button></div></div>
 <script src="app.js?v=6"></script>
+<script src="calendar.js?v=7"></script>
 </body>
 </html>
