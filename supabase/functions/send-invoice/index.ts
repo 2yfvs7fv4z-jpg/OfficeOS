@@ -1,29 +1,32 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+import { PDFDocument, StandardFonts, rgb } from "npm:pdf-lib@1.17.1";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "";
 const RESEND_FROM = Deno.env.get("RESEND_FROM") || "OfficeOS Invoices <invoices@example.com>";
-
+const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type"};
 function esc(v:string){return String(v||"").replace(/[&<>\"']/g,(m)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#039;"} as Record<string,string>)[m])}
-
-serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: {"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type"} });
-  try {
-    if (!RESEND_API_KEY) return Response.json({error:"Invoice email service is not configured yet."},{status:503,headers:{"Access-Control-Allow-Origin":"*"}});
-    const auth=req.headers.get("authorization")||"";
-    if(!auth.startsWith("Bearer ")) return Response.json({error:"Unauthorized"},{status:401,headers:{"Access-Control-Allow-Origin":"*"}});
-    const body=await req.json();
-    const {to,customer,company,number,dueDate,amount,lines=[],notes,paymentUrl,replyTo}=body;
-    if(!to||!number||!company) return Response.json({error:"Missing required invoice fields."},{status:400,headers:{"Access-Control-Allow-Origin":"*"}});
-    const rows=(Array.isArray(lines)?lines:[]).map((l:any)=>`<tr><td style="padding:10px;border-bottom:1px solid #e5e7eb">${esc(l.description)}</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;text-align:right">${Number(l.qty||0)}</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;text-align:right">$${Number(l.rate||0).toFixed(2)}</td><td style="padding:10px;border-bottom:1px solid #e5e7eb;text-align:right">$${(Number(l.qty||0)*Number(l.rate||0)).toFixed(2)}</td></tr>`).join("");
-    const pay=paymentUrl?`<p style="margin:28px 0"><a href="${esc(paymentUrl)}" style="background:#111827;color:white;text-decoration:none;padding:13px 18px;border-radius:10px;font-weight:700;display:inline-block">Pay Invoice</a></p>`:"";
-    const html=`<div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;max-width:680px;margin:auto;color:#111827"><h2 style="margin-bottom:4px">${esc(company)}</h2><div style="color:#6b7280">Invoice ${esc(number)}</div><hr style="border:0;border-top:1px solid #e5e7eb;margin:22px 0"><p>Hi ${esc(customer||"there")},</p><p>Here is invoice <b>${esc(number)}</b>${dueDate?` due <b>${esc(dueDate)}</b>`:""}.</p><table style="border-collapse:collapse;width:100%;margin-top:18px"><thead><tr><th style="text-align:left;padding:10px;background:#f3f4f6">Description</th><th style="text-align:right;padding:10px;background:#f3f4f6">Qty</th><th style="text-align:right;padding:10px;background:#f3f4f6">Rate</th><th style="text-align:right;padding:10px;background:#f3f4f6">Amount</th></tr></thead><tbody>${rows}</tbody></table><div style="font-size:22px;font-weight:800;text-align:right;margin-top:18px">Total: $${Number(amount||0).toFixed(2)}</div>${pay}${notes?`<p style="color:#6b7280">${esc(notes)}</p>`:""}<p style="color:#9ca3af;font-size:12px;margin-top:30px">Sent securely from OfficeOS.</p></div>`;
-    const payload:any={from:RESEND_FROM,to:[to],subject:`Invoice ${number} from ${company}`,html};
-    if(replyTo)payload.reply_to=replyTo;
-    const r=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"Authorization":`Bearer ${RESEND_API_KEY}`,"Content-Type":"application/json"},body:JSON.stringify(payload)});
-    const data=await r.json();
-    if(!r.ok)return Response.json({error:data?.message||"Email failed to send."},{status:502,headers:{"Access-Control-Allow-Origin":"*"}});
-    return Response.json({ok:true,id:data.id},{headers:{"Access-Control-Allow-Origin":"*"}});
-  } catch (e) {
-    return Response.json({error:e instanceof Error?e.message:"Unknown error"},{status:500,headers:{"Access-Control-Allow-Origin":"*"}});
-  }
+function b64(bytes:Uint8Array){let s="";for(let i=0;i<bytes.length;i+=0x8000)s+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(s)}
+function usd(n:any){return `$${Number(n||0).toFixed(2)}`}
+async function makePdf(b:any){
+  const pdf=await PDFDocument.create(),page=pdf.addPage([612,792]),font=await pdf.embedFont(StandardFonts.Helvetica),bold=await pdf.embedFont(StandardFonts.HelveticaBold);let y=742;
+  const text=(t:string,x:number,yy:number,size=10,f=font)=>page.drawText(String(t||""),{x,y:yy,size,font:f,color:rgb(.08,.1,.15)});
+  text(b.company,48,y,22,bold);text("INVOICE",470,y,20,bold);y-=32;text(`Invoice # ${b.number}`,48,y,10,bold);text(`Issue date: ${b.issueDate||""}`,390,y,9);y-=16;text(`Bill to: ${b.customer||""}`,48,y,10,bold);text(`Due date: ${b.dueDate||""}`,390,y,9);y-=26;
+  page.drawRectangle({x:48,y:y-18,width:516,height:22,color:rgb(.95,.96,.97)});text("Description",56,y-12,9,bold);text("Qty",390,y-12,9,bold);text("Rate",445,y-12,9,bold);text("Amount",510,y-12,9,bold);y-=30;
+  for(const l of (Array.isArray(b.lines)?b.lines:[])){if(y<150){y=742;pdf.addPage([612,792]);}const desc=String(l.description||"").slice(0,55);text(desc,56,y,9);text(String(Number(l.qty||0)),394,y,9);text(usd(l.rate),442,y,9);text(usd(Number(l.qty||0)*Number(l.rate||0)),505,y,9);y-=22;}
+  y-=8;page.drawLine({start:{x:360,y},end:{x:564,y},thickness:1,color:rgb(.88,.89,.91)});y-=18;text("Subtotal",410,y,10);text(usd(b.subtotal),505,y,10,bold);y-=18;text(`Tax ${Number(b.taxRate||0)}%`,410,y,10);text(usd(Number(b.amount||0)-Number(b.subtotal||0)),505,y,10,bold);y-=24;text("TOTAL",410,y,12,bold);text(usd(b.amount),505,y,12,bold);
+  if(b.notes){y-=42;text("Notes",48,y,10,bold);y-=16;for(const line of String(b.notes).match(/.{1,85}/g)||[]){text(line,48,y,9);y-=14;}}
+  text("Created with OfficeOS",48,42,8);return await pdf.save();
+}
+serve(async(req)=>{
+  if(req.method==="OPTIONS")return new Response("ok",{headers:cors});
+  try{
+    if(!RESEND_API_KEY)return Response.json({error:"Invoice email service is not configured yet."},{status:503,headers:cors});
+    const auth=req.headers.get("authorization")||"";if(!auth.startsWith("Bearer "))return Response.json({error:"Unauthorized"},{status:401,headers:cors});
+    const b=await req.json();if(!b.to||!b.number||!b.company)return Response.json({error:"Missing required invoice fields."},{status:400,headers:cors});
+    const rows=(Array.isArray(b.lines)?b.lines:[]).map((l:any)=>`<tr><td style="padding:11px;border-bottom:1px solid #e5e7eb">${esc(l.description)}</td><td style="padding:11px;border-bottom:1px solid #e5e7eb;text-align:right">${Number(l.qty||0)}</td><td style="padding:11px;border-bottom:1px solid #e5e7eb;text-align:right">${usd(l.rate)}</td><td style="padding:11px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:600">${usd(Number(l.qty||0)*Number(l.rate||0))}</td></tr>`).join("");
+    const pay=b.paymentUrl?`<a href="${esc(b.paymentUrl)}" style="background:#111827;color:#fff;text-decoration:none;padding:14px 22px;border-radius:10px;font-weight:700;display:inline-block">Pay Invoice</a>`:"";
+    const html=`<div style="background:#f4f5f7;padding:30px 12px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;color:#111827"><div style="max-width:720px;margin:auto;background:white;border-radius:16px;overflow:hidden;border:1px solid #e5e7eb"><div style="padding:28px 30px;background:#111827;color:white"><div style="font-size:24px;font-weight:800">${esc(b.company)}</div><div style="opacity:.75;margin-top:4px">Invoice ${esc(b.number)}</div></div><div style="padding:28px 30px"><div style="display:flex;justify-content:space-between;gap:20px;margin-bottom:24px"><div><div style="font-size:11px;color:#6b7280;text-transform:uppercase;font-weight:700">Bill to</div><div style="font-size:17px;font-weight:700;margin-top:4px">${esc(b.customer||"")}</div></div><div style="text-align:right"><div style="font-size:11px;color:#6b7280;text-transform:uppercase;font-weight:700">Due</div><div style="font-weight:700;margin-top:4px">${esc(b.dueDate||"")}</div></div></div><table style="border-collapse:collapse;width:100%;font-size:13px"><thead><tr><th style="text-align:left;padding:11px;background:#f3f4f6">Description</th><th style="text-align:right;padding:11px;background:#f3f4f6">Qty</th><th style="text-align:right;padding:11px;background:#f3f4f6">Rate</th><th style="text-align:right;padding:11px;background:#f3f4f6">Amount</th></tr></thead><tbody>${rows}</tbody></table><div style="max-width:280px;margin:22px 0 24px auto"><div style="display:flex;justify-content:space-between;padding:5px 0"><span>Subtotal</span><b>${usd(b.subtotal)}</b></div><div style="display:flex;justify-content:space-between;padding:5px 0"><span>Tax</span><b>${usd(Number(b.amount||0)-Number(b.subtotal||0))}</b></div><div style="display:flex;justify-content:space-between;border-top:2px solid #111827;padding-top:10px;margin-top:6px;font-size:21px"><b>Total</b><b>${usd(b.amount)}</b></div></div>${pay?`<div style="text-align:center;margin:28px 0">${pay}</div>`:""}${b.notes?`<div style="background:#f9fafb;border-radius:10px;padding:14px;color:#6b7280;font-size:13px">${esc(b.notes)}</div>`:""}<p style="color:#9ca3af;font-size:11px;text-align:center;margin:28px 0 0">A PDF copy of this invoice is attached for your records.</p></div></div></div>`;
+    const pdf=await makePdf(b);const payload:any={from:RESEND_FROM,to:[b.to],subject:`Invoice ${b.number} from ${b.company}`,html,attachments:[{filename:`Invoice-${String(b.number).replace(/[^a-zA-Z0-9-_]/g,'-')}.pdf`,content:b64(pdf)}]};if(b.replyTo)payload.reply_to=b.replyTo;
+    const r=await fetch("https://api.resend.com/emails",{method:"POST",headers:{Authorization:`Bearer ${RESEND_API_KEY}`,"Content-Type":"application/json"},body:JSON.stringify(payload)});const data=await r.json();if(!r.ok)return Response.json({error:data?.message||"Email failed to send."},{status:502,headers:cors});return Response.json({ok:true,id:data.id},{headers:cors});
+  }catch(e){return Response.json({error:e instanceof Error?e.message:"Unknown error"},{status:500,headers:cors});}
 });
