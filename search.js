@@ -1,0 +1,18 @@
+function searchScope(items){return current()==="all"?items:items.filter(x=>x.company===current())}
+function searchText(v){return String(v??"").toLowerCase()}
+function searchOffice(query){const q=searchText(query).trim();if(!q)return[];const hits=[];
+function add(kind,type,item,title,meta,haystack){if(searchText(haystack).includes(q))hits.push({kind,type,item,title,meta})}
+for(const x of searchScope(db.customers))add("Customer","customer",x,x.name,[x.phone,x.email,x.address].filter(Boolean).join(" • "),[x.name,x.phone,x.email,x.address,x.notes].join(" "));
+for(const x of searchScope(db.leads))add("Lead","lead",x,x.name,[x.status,x.service,x.phone].filter(Boolean).join(" • "),[x.name,x.phone,x.email,x.service,x.status,x.notes,x.value].join(" "));
+for(const x of searchScope(db.jobs))add("Job","job",x,x.title||x.customer,[x.customer,x.status,x.date,x.address].filter(Boolean).join(" • "),[x.title,x.customer,x.status,x.date,x.address,x.notes,x.amount].join(" "));
+for(const x of searchScope(db.events))add("Calendar","event",x,x.title,[x.date,x.time,x.customer,x.type].filter(Boolean).join(" • "),[x.title,x.date,x.time,x.customer,x.type,x.address,x.notes].join(" "));
+for(const x of searchScope(db.invoices))add(x.type||"Invoice","invoice",x,x.customer,[money(x.amount),x.status].filter(Boolean).join(" • "),[x.customer,x.type,x.status,x.amount].join(" "));
+for(const x of searchScope(db.tasks))add("Task","task",x,x.title,[x.done?"Done":"Open",x.priority,x.dueDate].filter(Boolean).join(" • "),[x.title,x.priority,x.dueDate].join(" "));
+return hits.slice(0,40)}
+function openOfficeSearch(){const gate=document.getElementById("searchGate");gate.classList.add("open");document.body.style.overflow="hidden";const input=document.getElementById("officeSearchInput");input.value="";renderOfficeSearch("");setTimeout(()=>input.focus(),80)}
+function closeOfficeSearch(){document.getElementById("searchGate").classList.remove("open");document.body.style.overflow=""}
+function renderOfficeSearch(value){const box=document.getElementById("officeSearchResults"),q=String(value||"").trim();if(!q){box.innerHTML='<div class="search-empty"><b>Search your whole office</b><div class="search-hint">Try a customer name, phone number, job, address, invoice amount, or date.</div></div>';return}const hits=searchOffice(q);if(!hits.length){box.innerHTML=`<div class="search-empty">No results for <b>${esc(q)}</b>.</div>`;return}box.innerHTML=hits.map((r,i)=>`<button class="search-result" onclick="openSearchResult(${i})"><div class="search-result-top"><div><div class="search-result-title">${esc(r.title||r.kind)}</div><div class="search-result-meta">${esc(r.meta||"")}</div></div><span class="search-kind">${esc(r.kind)}</span></div></button>`).join("");window._officeSearchHits=hits}
+function openSearchResult(i){const r=(window._officeSearchHits||[])[i];if(!r)return;closeOfficeSearch();if(r.type==="task"){switchPage("more");setTimeout(()=>document.getElementById("taskList")?.scrollIntoView({behavior:"smooth",block:"start"}),120);return}if(["lead","job","event","customer","invoice"].includes(r.type))openForm(r.type,r.item)}
+function switchPage(page){const btn=document.querySelector(`nav button[data-page="${page}"]`);if(btn)btn.click()}
+document.addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openOfficeSearch()}if(e.key==="Escape"&&document.getElementById("searchGate")?.classList.contains("open"))closeOfficeSearch()});
+document.addEventListener("DOMContentLoaded",()=>{const gate=document.getElementById("searchGate");if(gate)gate.addEventListener("click",e=>{if(e.target===gate)closeOfficeSearch()})});
