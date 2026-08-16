@@ -9,9 +9,10 @@
 <title>OfficeOS</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="styles.css?v=7">
+<link rel="stylesheet" href="search.css?v=8">
 </head>
 <body>
-<header><div class="brand">OfficeOS</div><div class="subtitle">Your businesses. One office.</div><select id="companySelect" class="company-select"></select></header>
+<header><div class="brand">OfficeOS</div><div class="subtitle">Your businesses. One office.</div><div class="header-tools"><select id="companySelect" class="company-select"></select><button class="search-open" onclick="openOfficeSearch()" aria-label="Search OfficeOS">⌕</button></div></header>
 <main>
 <section id="dashboard" class="page active">
 <h1 id="greeting">Good morning</h1><div class="muted" id="date"></div>
@@ -38,9 +39,11 @@
 <button class="fab" id="fab" onclick="quickAdd()">+</button>
 <nav><button class="active" data-page="dashboard"><span class="icon">⌂</span>Home</button><button data-page="leads"><span class="icon">◎</span>Leads</button><button data-page="jobs"><span class="icon">▣</span>Jobs</button><button data-page="calendar"><span class="icon">▦</span>Calendar</button><button data-page="more"><span class="icon">☰</span>Office</button></nav>
 <div class="overlay" id="overlay"><div class="sheet" onclick="event.stopPropagation()"><div class="sheet-handle"></div><div class="row between"><h2 id="formTitle">Add</h2><button class="secondary" onclick="closeForm()">Close</button></div><div id="formBody"></div></div></div>
+<div id="searchGate" class="search-gate"><div class="search-panel"><div class="search-head"><div class="search-head-row"><input id="officeSearchInput" type="search" placeholder="Search customers, jobs, invoices..." oninput="renderOfficeSearch(this.value)"><button class="secondary" onclick="closeOfficeSearch()">Close</button></div><div class="search-hint">Search names, phone numbers, addresses, services, dates, statuses, or amounts.</div></div><div id="officeSearchResults" class="search-results"></div></div></div>
 <div id="authGate" class="gate"><div class="gatebox"><div class="logo">OfficeOS</div><div class="muted">Your businesses. One office.</div><label>Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com"><label>Password</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="At least 6 characters"><button class="primary full" onclick="officeSignIn()">Sign In</button><div style="text-align:center;color:#9ca3af;margin:16px 0;font-size:12px">OR</div><button class="secondary full" onclick="officeSignUp()">Create My OfficeOS Account</button><div id="authMessage" style="margin-top:14px;font-size:13px"></div></div></div>
 <div id="setupGate" class="gate hidden"><div class="gatebox"><div class="step">Business setup</div><div class="logo">Build your office</div><p class="muted">Tell OfficeOS how this business works. You can change this later.</p><label>Business Name</label><input id="setupName"><label>Services</label><textarea id="setupServices"></textarea><label>Business Hours</label><input id="setupHours"><label>Service Area</label><input id="setupArea"><label>Scheduling Rules</label><textarea id="setupSchedule"></textarea><label>Payment Rules</label><textarea id="setupPayment"></textarea><label>OfficeOS May Handle Automatically</label><textarea id="setupAuto"></textarea><label>Always Requires Your Approval</label><textarea id="setupApproval"></textarea><button class="primary full" style="margin-top:18px" onclick="finishSetup()">Save Business Setup</button><button id="setupCancel" class="secondary full" style="margin-top:8px;display:none" onclick="hideSetup()">Cancel</button></div></div>
 <script src="app.js?v=6"></script>
 <script src="calendar.js?v=7"></script>
+<script src="search.js?v=8"></script>
 </body>
 </html>
