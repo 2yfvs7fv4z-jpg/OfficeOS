@@ -240,7 +240,9 @@ nav button.active{color:#111827}
 
 <script>
 const KEY="officeos_v1";
-
+const SUPABASE_URL = "https://bowrytgqbunodtmzvabp.supabase.co";
+const SUPABASE_KEY = "sb_publishable_RWtmsrw9v0dTZ2IaCF3Nbw_VVnnhLms";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const demo={
  currentCompany:"c1",
  companies:[
