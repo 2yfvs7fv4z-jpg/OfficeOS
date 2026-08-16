@@ -243,6 +243,217 @@ const KEY="officeos_v1";
 const SUPABASE_URL = "https://bowrytgqbunodtmzvabp.supabase.co";
 const SUPABASE_KEY = "sb_publishable_RWtmsrw9v0dTZ2IaCF3Nbw_VVnnhLms";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// OFFICEOS LOGIN SYSTEM
+function createAuthScreen(){
+  if(document.getElementById("authGate")) return;
+
+  const style=document.createElement("style");
+  style.textContent=`
+    #authGate{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      background:#f5f6f8;
+      padding:calc(35px + env(safe-area-inset-top)) 20px 30px;
+      overflow:auto;
+    }
+    #authGate.hidden{display:none}
+    .authBox{
+      max-width:430px;
+      margin:35px auto;
+      background:white;
+      border:1px solid #e5e7eb;
+      border-radius:22px;
+      padding:22px;
+      box-shadow:0 8px 30px rgba(0,0,0,.08);
+    }
+    .authLogo{
+      font-size:30px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .authSub{
+      color:#6b7280;
+      font-size:14px;
+      margin-bottom:22px;
+    }
+    .authBox input{
+      margin-bottom:12px;
+    }
+    .authDivider{
+      text-align:center;
+      color:#9ca3af;
+      margin:16px 0;
+      font-size:12px;
+    }
+    #authMessage{
+      margin-top:14px;
+      font-size:13px;
+      line-height:1.4;
+    }
+    #signOutButton{
+      margin-top:10px;
+      width:100%;
+      background:#374151;
+      color:white;
+    }
+  `;
+  document.head.appendChild(style);
+
+  const gate=document.createElement("div");
+  gate.id="authGate";
+  gate.innerHTML=`
+    <div class="authBox">
+      <div class="authLogo">OfficeOS</div>
+      <div class="authSub">Your businesses. One office.</div>
+
+      <label>Email</label>
+      <input
+        id="authEmail"
+        type="email"
+        autocomplete="email"
+        placeholder="you@example.com"
+      >
+
+      <label>Password</label>
+      <input
+        id="authPassword"
+        type="password"
+        autocomplete="current-password"
+        placeholder="At least 6 characters"
+      >
+
+      <button class="primary full" onclick="officeSignIn()">
+        Sign In
+      </button>
+
+      <div class="authDivider">OR</div>
+
+      <button class="secondary full" onclick="officeSignUp()">
+        Create My OfficeOS Account
+      </button>
+
+      <div id="authMessage"></div>
+    </div>
+  `;
+  document.body.appendChild(gate);
+}
+
+function authMessage(message,error=false){
+  const box=document.getElementById("authMessage");
+  if(!box) return;
+  box.textContent=message;
+  box.style.color=error ? "#b91c1c" : "#166534";
+}
+
+async function officeSignIn(){
+  const email=document.getElementById("authEmail").value.trim();
+  const password=document.getElementById("authPassword").value;
+
+  if(!email || !password){
+    authMessage("Enter your email and password.",true);
+    return;
+  }
+
+  authMessage("Signing you in...");
+
+  const {error}=await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+    authMessage(error.message,true);
+    return;
+  }
+
+  authMessage("Signed in.");
+}
+
+async function officeSignUp(){
+  const email=document.getElementById("authEmail").value.trim();
+  const password=document.getElementById("authPassword").value;
+
+  if(!email){
+    authMessage("Enter your email address.",true);
+    return;
+  }
+
+  if(password.length < 6){
+    authMessage("Your password must be at least 6 characters.",true);
+    return;
+  }
+
+  authMessage("Creating your account...");
+
+  const {data,error}=await supabaseClient.auth.signUp({
+    email,
+    password,
+    options:{
+      emailRedirectTo:"https://2yfvs7fv4z-jpg.github.io/OfficeOS/"
+    }
+  });
+
+  if(error){
+    authMessage(error.message,true);
+    return;
+  }
+
+  if(!data.session){
+    authMessage(
+      "Account created. Check your email and tap the confirmation link, then return to OfficeOS."
+    );
+  }else{
+    authMessage("Account created.");
+  }
+}
+
+async function officeSignOut(){
+  await supabaseClient.auth.signOut();
+}
+
+function updateAuthScreen(session){
+  const gate=document.getElementById("authGate");
+  if(!gate) return;
+
+  if(session && session.user){
+    gate.classList.add("hidden");
+
+    let button=document.getElementById("signOutButton");
+
+    if(!button){
+      button=document.createElement("button");
+      button.id="signOutButton";
+      button.textContent="Sign Out";
+      button.onclick=officeSignOut;
+
+      const officePage=document.getElementById("more");
+      if(officePage){
+        const card=document.createElement("div");
+        card.className="card";
+        card.innerHTML="<h2>Account</h2>";
+        card.appendChild(button);
+        officePage.appendChild(card);
+      }
+    }
+  }else{
+    gate.classList.remove("hidden");
+  }
+}
+
+async function initOfficeAuth(){
+  createAuthScreen();
+
+  const {data}=await supabaseClient.auth.getSession();
+  updateAuthScreen(data.session);
+
+  supabaseClient.auth.onAuthStateChange((event,session)=>{
+    updateAuthScreen(session);
+  });
+}
+
+window.addEventListener("load",initOfficeAuth);
+ 
 const demo={
  currentCompany:"c1",
  companies:[
