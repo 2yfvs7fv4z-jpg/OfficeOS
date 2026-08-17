@@ -1,0 +1,10 @@
+(function(){
+const ENDPOINT='https://bowrytgqbunodtmzvabp.supabase.co/functions/v1/send-lead-welcome';
+function companyFor(id){return (db.companies||[]).find(c=>c.id===id)}
+function emailConfig(c){const p=c?.playbook||{};return{enabled:p.initialEmailEnabled!==false,subject:p.initialEmailSubject||`Thanks for contacting ${c?.name||'us'}`,message:p.initialEmailMessage||''}}
+async function sendWelcome(lead){if(!lead?.email||lead.initialEmailSentAt||lead.initialEmailSending)return{ok:false,skipped:true};const c=companyFor(lead.company);if(!c)return{ok:false,skipped:true};const cfg=emailConfig(c);if(!cfg.enabled)return{ok:false,skipped:true};lead.initialEmailSending=true;try{const{data:{session}}=await supabaseClient.auth.getSession();if(!session?.access_token)throw new Error('Sign in required');const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},body:JSON.stringify({to:lead.email,customer:lead.name,company:c.name,service:lead.service||'',subject:cfg.subject,message:cfg.message,replyTo:c.email||''})});const data=await r.json().catch(()=>({}));if(!r.ok||!data.ok)throw new Error(data.error||'Email failed');lead.initialEmailSentAt=nowISO();lead.initialEmailId=data.id||'';lead.updatedAt=nowISO();logActivity(lead.company,`Initial response emailed to ${lead.name}`);save();return{ok:true}}catch(e){lead.initialEmailError=String(e?.message||'Email failed');lead.updatedAt=nowISO();logActivity(lead.company,`Initial email to ${lead.name} needs attention`);save();return{ok:false,error:lead.initialEmailError}}finally{lead.initialEmailSending=false}}
+function scan(){for(const lead of db.leads||[]){if(lead?.email&&!lead.initialEmailSentAt&&!lead.initialEmailSending)sendWelcome(lead)}}
+window.officeSendLeadWelcome=sendWelcome;
+setTimeout(scan,1800);
+let lastCount=(db.leads||[]).length;setInterval(()=>{const n=(db.leads||[]).length;if(n!==lastCount){lastCount=n;scan()}},1200);
+})();
