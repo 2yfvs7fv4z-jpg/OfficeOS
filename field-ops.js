@@ -97,4 +97,5 @@ ensure();
 const planCss=document.createElement('link');planCss.rel='stylesheet';planCss.href='plan-entitlements.css?v=1';document.head.appendChild(planCss);
 const planScript=document.createElement('script');planScript.src='plan-entitlements.js?v=1';planScript.defer=true;document.body.appendChild(planScript);
 const s=document.createElement('script');s.src='field-ui.js?v=1';s.defer=true;document.body.appendChild(s);
+const guard=document.createElement('script');guard.src='field-access-guard.js?v=1';guard.defer=true;document.body.appendChild(guard);
 })();
