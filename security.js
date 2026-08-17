@@ -22,8 +22,9 @@ try{ if(window.opener) window.opener=null; }catch{}
 try{ if(window.top!==window.self) window.top.location=window.self.location.href; }catch{}
 
 const state={lastVerifiedAt:0,verificationInterval:15*60*1000};
+function hasAuth(){return typeof supabaseClient!=='undefined'&&!!supabaseClient?.auth}
 async function verifySession(force=false){
-  if(!window.supabaseClient?.auth)return null;
+  if(!hasAuth())return null;
   if(!force && Date.now()-state.lastVerifiedAt<state.verificationInterval)return true;
   try{
     const {data,error}=await supabaseClient.auth.getUser();
