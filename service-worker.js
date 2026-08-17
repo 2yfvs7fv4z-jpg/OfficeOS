@@ -1,5 +1,29 @@
-const CACHE='officeos-shell-v24';
-const SHELL=['./','./index.html','./styles.css','./search.css','./billing.css','./insights.css','./invoice-pro.css','./invoice-branding.css','./officeos-plus.css','./app.js','./calendar.js','./search.js','./billing.js','./insights.js','./invoice-pro.js','./invoice-email-v23.js','./invoice-branding.js','./officeos-plus.js','./manifest.webmanifest','./officeos-icon.svg','./payment-pending.html'];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
-self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.method!=='GET'||u.origin!==location.origin)return;const isAsset=/\.(?:js|css|html|webmanifest)$/.test(u.pathname)||e.request.mode==='navigate';if(isAsset){e.respondWith(fetch(e.request).then(r=>{if(r.ok){const c=r.clone();caches.open(CACHE).then(x=>x.put(e.request,c))}return r}).catch(()=>caches.match(e.request).then(hit=>hit||caches.match('./index.html'))));return}e.respondWith(caches.match(e.request).then(hit=>hit||fetch(e.request).then(r=>{if(r.ok){const c=r.clone();caches.open(CACHE).then(x=>x.put(e.request,c))}return r})))})
+const CACHE='officeos-shell-v25';
+const SHELL=['/','/index.html','/styles.css','/search.css','/billing.css','/insights.css','/invoice-pro.css','/invoice-branding.css','/officeos-plus.css','/app.js','/calendar.js','/search.js','/billing.js','/insights.js','/invoice-pro.js','/invoice-email-v23.js','/invoice-branding.js','/officeos-plus.js','/manifest.webmanifest','/officeos-icon.svg','/payment-pending.html'];
+
+self.addEventListener('install',e=>{
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).catch(()=>null).then(()=>self.skipWaiting()));
+});
+
+self.addEventListener('activate',e=>{
+  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+});
+
+self.addEventListener('fetch',e=>{
+  const req=e.request,u=new URL(req.url);
+  if(req.method!=='GET'||u.origin!==self.location.origin)return;
+  if(req.mode==='navigate'){
+    e.respondWith(fetch(req).then(r=>{
+      if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put('/index.html',copy));}
+      return r;
+    }).catch(()=>caches.match('/index.html')));
+    return;
+  }
+  const isAsset=/\.(?:js|css|html|webmanifest|svg)$/.test(u.pathname);
+  if(isAsset){
+    e.respondWith(fetch(req).then(r=>{
+      if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(req,copy));}
+      return r;
+    }).catch(()=>caches.match(req)));
+  }
+});
