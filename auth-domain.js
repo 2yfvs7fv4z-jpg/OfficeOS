@@ -25,6 +25,7 @@ async function registerServiceWorker(){
   navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!sessionStorage.getItem('officeos-sw-reloaded')){sessionStorage.setItem('officeos-sw-reloaded','1');location.reload()}});
  }catch(e){console.warn('OfficeOS service worker unavailable',e)}
 }
+function loadSecurityCenter(){if(document.querySelector('script[data-office-security-center]'))return;const s=document.createElement('script');s.src='/security-center.js?v=1';s.dataset.officeSecurityCenter='1';document.body.appendChild(s)}
 function installRememberMe(){
  const password=el('authPassword');
  if(!password||el('officeRememberDevice'))return;
@@ -93,5 +94,6 @@ function authHealth(){
 }
 installPwaMeta();
 registerServiceWorker();
+loadSecurityCenter();
 setTimeout(async()=>{await enforceSessionChoice();installOverrides();authHealth()},700);
 })();
