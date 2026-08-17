@@ -4,6 +4,24 @@ const EMAIL_KEY='officeos_last_email';
 function el(id){return document.getElementById(id)}
 function rememberEmail(){const input=el('authEmail');if(input?.value.trim())localStorage.setItem(EMAIL_KEY,input.value.trim().toLowerCase())}
 function fillEmail(){const input=el('authEmail');if(input&&!input.value){const saved=localStorage.getItem(EMAIL_KEY);if(saved)input.value=saved}}
+function installPwaMeta(){
+ const head=document.head;
+ if(!head)return;
+ const ensureMeta=(name,content)=>{let m=head.querySelector(`meta[name="${name}"]`);if(!m){m=document.createElement('meta');m.name=name;head.appendChild(m)}m.content=content};
+ ensureMeta('apple-mobile-web-app-capable','yes');
+ ensureMeta('apple-mobile-web-app-status-bar-style','default');
+ ensureMeta('apple-mobile-web-app-title','OfficeOS');
+ let icon=head.querySelector('link[rel="apple-touch-icon"]');if(!icon){icon=document.createElement('link');icon.rel='apple-touch-icon';head.appendChild(icon)}icon.href='/officeos-icon.svg?v=25';
+ let manifest=head.querySelector('link[rel="manifest"]');if(manifest)manifest.href='/manifest.webmanifest?v=25';
+}
+async function registerServiceWorker(){
+ if(!('serviceWorker'in navigator)||location.protocol!=='https:'||location.hostname!=='officeospro.com')return;
+ try{
+  const reg=await navigator.serviceWorker.register('/service-worker.js?v=25',{scope:'/'});
+  reg.update().catch(()=>{});
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!sessionStorage.getItem('officeos-sw-reloaded')){sessionStorage.setItem('officeos-sw-reloaded','1');location.reload()}});
+ }catch(e){console.warn('OfficeOS service worker unavailable',e)}
+}
 function installOverrides(){
  fillEmail();
  if(typeof window.officeSignIn==='function'){
@@ -39,5 +57,7 @@ function authHealth(){
  if(!window.supabaseClient?.auth)return;
  supabaseClient.auth.getSession().then(({data})=>{if(data?.session?.user?.email)localStorage.setItem(EMAIL_KEY,data.session.user.email)}).catch(()=>{});
 }
+installPwaMeta();
+registerServiceWorker();
 setTimeout(()=>{installOverrides();authHealth()},700);
 })();
