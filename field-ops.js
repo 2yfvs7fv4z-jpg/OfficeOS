@@ -10,6 +10,7 @@ function ensure(){
  db.teamMembers=Array.isArray(db.teamMembers)?db.teamMembers:[];
  db.jobTemplates=Array.isArray(db.jobTemplates)?db.jobTemplates:[];
  db.fieldAudit=Array.isArray(db.fieldAudit)?db.fieldAudit:[];
+ for(const m of db.teamMembers){if(!Array.isArray(m.permissions))m.permissions=[];if(!Array.isArray(m.deniedPermissions))m.deniedPermissions=[];if(typeof m.active!=='boolean')m.active=true}
  for(const j of db.jobs||[]){
   if(!Array.isArray(j.assignedTeamIds))j.assignedTeamIds=[];
   if(!Array.isArray(j.fieldNotes))j.fieldNotes=[];
@@ -19,8 +20,8 @@ function ensure(){
 }
 function memberForUser(){
  ensure();
- const uid=currentUser?.id||'';
- return db.teamMembers.find(m=>m.userId===uid&&m.active!==false)||null;
+ const userId=currentUser?.id||'';
+ return db.teamMembers.find(m=>m.userId===userId&&m.active!==false)||null;
 }
 function roleOf(member){return member?.role||'field'}
 function permissions(member){
@@ -29,6 +30,8 @@ function permissions(member){
 }
 function can(permission,member=memberForUser()){
  if(!member)return true;
+ const denied=new Set(member.deniedPermissions||[]);
+ if(denied.has(permission))return false;
  const p=permissions(member);
  return p.has('*')||p.has(permission);
 }
