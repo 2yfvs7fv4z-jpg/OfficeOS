@@ -19,4 +19,5 @@ window.officeFieldAddNote=function(jobId){const input=el('fieldNote_'+jobId);try
 window.officeRenderMyDay=render;
 setTimeout(install,900);
 const jt=document.createElement('script');jt.src='job-templates.js?v=1';jt.defer=true;document.body.appendChild(jt);
+const ta=document.createElement('script');ta.src='team-admin.js?v=1';ta.defer=true;document.body.appendChild(ta);
 })();
