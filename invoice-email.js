@@ -16,6 +16,8 @@ function emailPayload(x){
     rate:Number(l.rate||0),
     amount:Number(l.qty||0)*Number(l.rate||0)
   }));
+  const fallbackPaymentUrl='https://2yfvs7fv4z-jpg.github.io/OfficeOS/payment-pending.html';
+  const paymentUrl=String(x.paymentUrl||'').trim()||fallbackPaymentUrl;
   return{
     to:recipientEmail,
     recipientEmail,
@@ -34,7 +36,7 @@ function emailPayload(x){
     lines:normalizedLines,
     lineItems,
     notes:x.notes||'',
-    paymentUrl:x.paymentUrl||'',
+    paymentUrl,
     replyTo:currentUser?.email||''
   }
 }
