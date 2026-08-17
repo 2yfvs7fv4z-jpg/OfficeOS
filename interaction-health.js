@@ -22,26 +22,11 @@ function check(node){
  node.setAttribute('aria-disabled','true');
  console.error(`[OfficeOS] Missing click handler: ${name}`,node);
 }
-function scan(root=document){
- root.querySelectorAll?.('[onclick]').forEach(check);
- return [...broken.values()];
-}
-document.addEventListener('click',e=>{
- const node=e.target.closest?.('[data-office-broken-action]');
- if(!node)return;
- e.preventDefault();e.stopImmediatePropagation();
- const action=node.dataset.officeBrokenAction||'this action';
- alert(`OfficeOS caught a control that needs an update (${action}). It has been blocked instead of failing silently.`);
-},true);
-const observer=new MutationObserver(records=>{
- for(const rec of records){
-   rec.addedNodes.forEach(n=>{
-     if(!(n instanceof HTMLElement))return;
-     check(n);scan(n);
-   });
- }
-});
-function start(){scan();observer.observe(document.body,{childList:true,subtree:true});setTimeout(scan,1200);setTimeout(scan,3000)}
+function scan(root=document){root.querySelectorAll?.('[onclick]').forEach(check);return [...broken.values()]}
+document.addEventListener('click',e=>{const node=e.target.closest?.('[data-office-broken-action]');if(!node)return;e.preventDefault();e.stopImmediatePropagation();const action=node.dataset.officeBrokenAction||'this action';alert(`OfficeOS caught a control that needs an update (${action}). It has been blocked instead of failing silently.`)},true);
+const observer=new MutationObserver(records=>{for(const rec of records){rec.addedNodes.forEach(n=>{if(!(n instanceof HTMLElement))return;check(n);scan(n)})}});
+function loadBatchImport(){if(document.querySelector('script[data-office-batch-import]'))return;const s=document.createElement('script');s.src='/batch-import.js?v=1';s.dataset.officeBatchImport='1';s.defer=true;document.body.appendChild(s)}
+function start(){scan();observer.observe(document.body,{childList:true,subtree:true});loadBatchImport();setTimeout(scan,1200);setTimeout(scan,3000)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 window.OfficeOSInteractionHealth={scan,getBroken:()=>[...broken.entries()].map(([node,handler])=>({handler,text:(node.textContent||'').trim().slice(0,80)}))};
 })();
