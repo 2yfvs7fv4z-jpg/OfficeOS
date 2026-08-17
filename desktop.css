@@ -1,3 +1,13 @@
+@media (min-width: 760px) and (max-width: 979px){
+  main{max-width:1100px;padding:22px 24px 120px}
+  header{padding-left:24px;padding-right:24px}
+  .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #leadList,#jobList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  #leadList>.item,#jobList>.item{margin:0}
+  .gatebox{max-width:560px;padding:28px}
+  .sheet{max-width:720px;margin:0 auto;border-radius:22px 22px 0 0}
+}
+
 @media (min-width: 980px){
   body{padding:0 0 0 220px;background:#f4f6f8;min-height:100vh}
   header{position:fixed;left:0;top:0;bottom:0;width:220px;padding:26px 18px;background:#111827;display:flex;flex-direction:column;align-items:stretch;z-index:25}
@@ -7,13 +17,17 @@
   .company-select{margin-top:0}
   .search-open{width:100%;border-radius:12px;background:#263244;color:#fff;font-size:20px}
   nav{left:0;top:148px;bottom:auto;right:auto;width:220px;background:transparent;border:0;backdrop-filter:none;padding:10px 12px;display:flex;flex-direction:column;gap:6px;z-index:26}
-  nav button{width:100%;min-height:46px;display:flex;flex-direction:row;justify-content:flex-start;gap:10px;padding:11px 12px;border-radius:12px;color:#cbd5e1;font-size:14px;text-align:left}
+  nav button{width:100%;min-height:46px;display:flex;flex-direction:row;justify-content:flex-start;gap:10px;padding:11px 12px;border-radius:12px;color:#cbd5e1;font-size:14px;text-align:left;transition:background .15s ease,color .15s ease,transform .15s ease}
+  nav button:hover{background:#1f2937;color:#fff;transform:translateX(2px)}
   nav .icon{font-size:18px;margin:0;width:22px;text-align:center}
   nav button.active{background:#263244;color:#fff}
   main{max-width:1440px;padding:28px 32px 48px;margin:0 auto}
   h1{font-size:30px}
   h2{font-size:19px}
   .page.active{min-height:calc(100vh - 56px)}
+  .card,.item,.stat{transition:box-shadow .16s ease,border-color .16s ease,transform .16s ease}
+  .card:hover,.stat:hover{border-color:#d8dde5;box-shadow:0 8px 24px rgba(17,24,39,.07)}
+  button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid rgba(37,99,235,.25);outline-offset:2px}
   .stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}
   .stat{padding:18px}.stat strong{font-size:30px}
   #dashboard.page.active{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;align-items:start}
@@ -41,8 +55,9 @@
   .overlay{align-items:center;justify-content:center;padding:30px}
   .sheet{width:min(760px,92vw);max-height:88vh;border-radius:22px;padding:24px;box-shadow:0 24px 70px #0005}
   .sheet-handle{display:none}
-  .gate{padding:50px}
-  .gatebox{max-width:560px;padding:30px}
+  .gate{padding:50px;background:linear-gradient(135deg,#f8fafc,#eef2f7)}
+  .gatebox{max-width:560px;padding:34px;border-radius:24px;box-shadow:0 18px 55px rgba(17,24,39,.12)}
+  .gatebox .logo{font-size:36px}
   .search-panel{width:min(900px,92vw)!important;max-height:86vh;border-radius:20px!important;margin:5vh auto!important}
   .office-ai-panel{width:min(680px,92vw)!important;max-height:82vh!important;border-radius:22px!important}
   .import-source-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -58,4 +73,11 @@
   #more>.card{grid-column:span 4}
   #officeImportCenter{grid-column:1/-1!important}
   #more>.card:has(#customerList),#more>.card:has(#invoiceList),#more>.card:has(#taskList),#more>.card:has(#approvalList),#more>.card:has(#activityList){grid-column:span 6}
+}
+
+@media (min-width: 1600px){
+  main{max-width:1580px;padding-left:54px;padding-right:54px}
+  #dashboard>.card:nth-of-type(1),#dashboard>.card:nth-of-type(3){grid-column:1/9}
+  #dashboard>.card:nth-of-type(2),#dashboard>.card:nth-of-type(4){grid-column:9/-1}
+  .cal-day{min-height:140px}
 }
