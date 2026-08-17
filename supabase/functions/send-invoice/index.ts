@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { PDFDocument, StandardFonts, rgb } from "npm:pdf-lib@1.17.1";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "";
-const RESEND_FROM = Deno.env.get("RESEND_FROM") || "OfficeOS <onboarding@resend.dev>";
+const RESEND_FROM = Deno.env.get("RESEND_FROM") || "OfficeOS Invoices <invoices@officeospro.com>";
 const cors={
   "Access-Control-Allow-Origin":"https://2yfvs7fv4z-jpg.github.io",
   "Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type",
