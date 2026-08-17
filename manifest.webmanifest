@@ -1,15 +1,18 @@
 {
+  "id": "/",
   "name": "OfficeOS",
   "short_name": "OfficeOS",
   "description": "Your businesses. One office.",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
   "background_color": "#f5f6f8",
   "theme_color": "#111827",
   "icons": [
     {
-      "src": "officeos-icon.svg",
+      "src": "/officeos-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
