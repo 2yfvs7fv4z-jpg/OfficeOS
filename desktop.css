@@ -1,0 +1,61 @@
+@media (min-width: 980px){
+  body{padding:0 0 0 220px;background:#f4f6f8;min-height:100vh}
+  header{position:fixed;left:0;top:0;bottom:0;width:220px;padding:26px 18px;background:#111827;display:flex;flex-direction:column;align-items:stretch;z-index:25}
+  header .brand{font-size:26px;margin-bottom:2px}
+  header .subtitle{margin-bottom:22px}
+  .header-tools{display:flex;flex-direction:column;gap:10px}
+  .company-select{margin-top:0}
+  .search-open{width:100%;border-radius:12px;background:#263244;color:#fff;font-size:20px}
+  nav{left:0;top:148px;bottom:auto;right:auto;width:220px;background:transparent;border:0;backdrop-filter:none;padding:10px 12px;display:flex;flex-direction:column;gap:6px;z-index:26}
+  nav button{width:100%;min-height:46px;display:flex;flex-direction:row;justify-content:flex-start;gap:10px;padding:11px 12px;border-radius:12px;color:#cbd5e1;font-size:14px;text-align:left}
+  nav .icon{font-size:18px;margin:0;width:22px;text-align:center}
+  nav button.active{background:#263244;color:#fff}
+  main{max-width:1440px;padding:28px 32px 48px;margin:0 auto}
+  h1{font-size:30px}
+  h2{font-size:19px}
+  .page.active{min-height:calc(100vh - 56px)}
+  .stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}
+  .stat{padding:18px}.stat strong{font-size:30px}
+  #dashboard.page.active{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;align-items:start}
+  #dashboard>h1,#dashboard>#date,#dashboard>.stats{grid-column:1/-1}
+  #dashboard>.card{margin-bottom:0}
+  #dashboard>.card:nth-of-type(1){grid-column:1/8}
+  #dashboard>.card:nth-of-type(2){grid-column:8/-1}
+  #dashboard>.card:nth-of-type(3){grid-column:1/8}
+  #dashboard>.card:nth-of-type(4){grid-column:8/-1}
+  #more.page.active{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;align-items:start}
+  #more>h1{grid-column:1/-1}
+  #more>.card{margin-bottom:0;grid-column:span 6}
+  #officeImportCenter{grid-column:1/-1!important}
+  #more>.card:has(#customerList),#more>.card:has(#invoiceList),#more>.card:has(#taskList),#more>.card:has(#approvalList),#more>.card:has(#activityList){grid-column:span 6}
+  #leads.page.active,#jobs.page.active,#calendar.page.active{max-width:none}
+  #leadList,#jobList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  #leadList>.item,#jobList>.item{margin:0}
+  .pipeline{overflow:visible;flex-wrap:wrap}
+  .month-grid{border-radius:18px}
+  .cal-day{min-height:120px;padding:10px 8px}
+  .calendar-title{font-size:24px}
+  .calendar-upcoming{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .calendar-upcoming>.mini-event{margin:0}
+  .fab{right:30px;bottom:28px;width:54px;height:54px}
+  .overlay{align-items:center;justify-content:center;padding:30px}
+  .sheet{width:min(760px,92vw);max-height:88vh;border-radius:22px;padding:24px;box-shadow:0 24px 70px #0005}
+  .sheet-handle{display:none}
+  .gate{padding:50px}
+  .gatebox{max-width:560px;padding:30px}
+  .search-panel{width:min(900px,92vw)!important;max-height:86vh;border-radius:20px!important;margin:5vh auto!important}
+  .office-ai-panel{width:min(680px,92vw)!important;max-height:82vh!important;border-radius:22px!important}
+  .import-source-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .import-type-row{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .import-preview{max-height:420px}
+}
+
+@media (min-width: 1280px){
+  body{padding-left:250px}
+  header,nav{width:250px}
+  main{padding:34px 42px 60px}
+  #leadList,#jobList{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #more>.card{grid-column:span 4}
+  #officeImportCenter{grid-column:1/-1!important}
+  #more>.card:has(#customerList),#more>.card:has(#invoiceList),#more>.card:has(#taskList),#more>.card:has(#approvalList),#more>.card:has(#activityList){grid-column:span 6}
+}
