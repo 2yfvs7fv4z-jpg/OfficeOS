@@ -1,0 +1,17 @@
+name: OfficeOS UI Action Contract
+
+on:
+  push:
+    branches: [main, officeos-v1-platform-expansion, officeos-v1-field-access-hardening]
+  pull_request:
+
+jobs:
+  check-ui-actions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify clickable controls have handlers
+        run: node scripts/check-ui-actions.mjs
