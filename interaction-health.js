@@ -23,8 +23,9 @@ const observer=new MutationObserver(records=>{for(const rec of records){rec.adde
 function loadScriptOnce(attr,src){if(document.querySelector(`script[${attr}]`))return;const s=document.createElement('script');s.src=src;s.setAttribute(attr,'1');s.defer=true;document.body.appendChild(s)}
 function loadBatchImport(){loadScriptOnce('data-office-batch-import','/batch-import.js?v=1')}
 function loadActions(){loadScriptOnce('data-office-actions','/app-actions.js?v=1')}
+function loadDailyBrief(){loadScriptOnce('data-office-daily-brief','/daily-brief-polish.js?v=1')}
 function loadJobPhotos(){if(!document.querySelector('link[data-office-job-photos]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/job-photos.css?v=1';l.dataset.officeJobPhotos='1';document.head.appendChild(l)}loadScriptOnce('data-office-job-photos','/job-photos.js?v=1')}
-function start(){scan();observer.observe(document.body,{childList:true,subtree:true});loadActions();loadBatchImport();loadJobPhotos();setTimeout(scan,1200);setTimeout(scan,3000)}
+function start(){scan();observer.observe(document.body,{childList:true,subtree:true});loadActions();loadBatchImport();loadJobPhotos();loadDailyBrief();setTimeout(scan,1200);setTimeout(scan,3000)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 window.OfficeOSInteractionHealth={scan,getBroken:()=>[...broken.entries()].map(([node,handler])=>({handler,text:(node.textContent||'').trim().slice(0,80)})),getUnverified:()=>[...document.querySelectorAll('button[data-office-audit="unverified"]')].map(node=>(node.textContent||'').trim().slice(0,80))};
 })();
