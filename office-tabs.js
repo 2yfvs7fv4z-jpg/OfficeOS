@@ -1,43 +1,30 @@
 (function(){
-const JUMPS=[
-  ['account','Account'],
-  ['security','Security'],
-  ['money','Money'],
-  ['approvals','Approvals'],
-  ['activity','Activity'],
-  ['playbook','Playbook'],
-  ['companies','Companies'],
-  ['data','Data']
-];
+const OFFICE_JUMPS=[['money','Money'],['approvals','Approvals'],['activity','Activity'],['playbook','Playbook'],['companies','Companies']];
+const SETTINGS_JUMPS=[['account','Account'],['security','Security'],['data','Data'],['app','App Settings']];
 let observer=null,busy=false;
 function office(){return document.getElementById('more')}
+function settingsPage(){return document.getElementById('settings')}
 function heading(card){return String(card?.querySelector('h2')?.textContent||'').trim()}
-function cards(){return [...document.querySelectorAll('#more .card')]}
-function cardByHeading(text){return cards().find(c=>heading(c)===text)||null}
-function firstMatching(fn){return cards().find(fn)||null}
+function officeCards(){return [...document.querySelectorAll('#more .card')]}
+function firstOffice(fn){return officeCards().find(fn)||null}
 function ensureHeading(host,id,title,subtitle){let h=document.getElementById(id);if(h)return h;h=document.createElement('div');h.id=id;h.className='relocated-heading';h.innerHTML=`<h2>${title}</h2>${subtitle?`<div class="office-section-note">${subtitle}</div>`:''}`;host.appendChild(h);return h}
+function ensureSettingsHost(){const page=settingsPage();if(!page)return null;let host=document.getElementById('settingsOrganized');if(host)return host;host=document.createElement('div');host.id='settingsOrganized';document.getElementById('settingsHome')?.insertAdjacentElement('afterend',host);return host}
 function relocate(){
-  const leads=document.getElementById('leads'),dashboard=document.getElementById('dashboard');
-  const customers=cardByHeading('Customers');
-  if(customers&&leads&&!customers.dataset.relocated){customers.dataset.relocated='crm';customers.classList.add('relocated-card');ensureHeading(leads,'crmCustomersHeading','Customers','Customer records live with Leads & CRM.').insertAdjacentElement('afterend',customers)}
-  const tasks=cardByHeading('Tasks');
-  if(tasks&&dashboard&&!tasks.dataset.relocated){tasks.dataset.relocated='home';tasks.classList.add('relocated-card');const action=document.getElementById('actionCenter')?.closest('.card');if(action)action.insertAdjacentElement('afterend',tasks);else dashboard.appendChild(tasks)}
+ const leads=document.getElementById('leads'),dashboard=document.getElementById('dashboard'),settingsHost=ensureSettingsHost();
+ const customers=officeCards().find(c=>heading(c)==='Customers');if(customers&&leads&&!customers.dataset.relocated){customers.dataset.relocated='crm';customers.classList.add('relocated-card');ensureHeading(leads,'crmCustomersHeading','Customers','Customer records live with Leads & CRM.').insertAdjacentElement('afterend',customers)}
+ const tasks=officeCards().find(c=>heading(c)==='Tasks');if(tasks&&dashboard&&!tasks.dataset.relocated){tasks.dataset.relocated='home';tasks.classList.add('relocated-card');const action=document.getElementById('actionCenter')?.closest('.card');if(action)action.insertAdjacentElement('afterend',tasks);else dashboard.appendChild(tasks)}
+ const account=officeCards().find(c=>heading(c)==='Account');if(account&&!account.dataset.relocated){account.dataset.relocated='settings-duplicate';account.style.display='none'}
+ const data=officeCards().find(c=>heading(c)==='Data');if(data&&settingsHost&&!data.dataset.relocated){data.dataset.relocated='settings';data.classList.add('relocated-card');settingsHost.appendChild(data)}
+ const security=document.getElementById('officeSecurityCenter');if(security&&settingsHost&&security.parentElement!==settingsHost){security.dataset.relocated='settings';security.classList.add('relocated-card');settingsHost.insertBefore(security,settingsHost.firstChild)}
 }
-function targetFor(key){
-  if(key==='account')return firstMatching(c=>/^account$/i.test(heading(c)));
-  if(key==='security')return firstMatching(c=>/security|device/i.test(heading(c))||/security/i.test(c.id||''));
-  if(key==='money')return firstMatching(c=>/invoice|estimate|bill|payment|finance/i.test(heading(c))||c.id==='payablesCard');
-  if(key==='approvals')return firstMatching(c=>/^approvals$/i.test(heading(c)));
-  if(key==='activity')return firstMatching(c=>/recent activity|activity/i.test(heading(c)));
-  if(key==='playbook')return firstMatching(c=>/playbook/i.test(heading(c)));
-  if(key==='companies')return firstMatching(c=>/^companies$/i.test(heading(c)));
-  if(key==='data')return firstMatching(c=>/^data$/i.test(heading(c))||/migration|import/i.test(heading(c)));
-  return null;
-}
-function ensureNav(){const o=office();if(!o)return null;let nav=document.getElementById('officeJumpNav');if(nav)return nav;nav=document.createElement('div');nav.id='officeJumpNav';nav.className='office-jump-nav';nav.setAttribute('aria-label','Office page navigation');nav.innerHTML=JUMPS.map(([key,label])=>`<button type="button" class="office-jump-btn" data-jump="${key}" onclick="officeJumpTo('${key}')">${label}</button>`).join('');o.querySelector('h1')?.insertAdjacentElement('afterend',nav);return nav}
-function refreshButtons(){const nav=ensureNav();if(!nav)return;nav.querySelectorAll('[data-jump]').forEach(btn=>{const target=targetFor(btn.dataset.jump);btn.hidden=!target})}
-window.officeJumpTo=function(key){const target=targetFor(key);if(!target)return;document.querySelectorAll('#officeJumpNav .office-jump-btn').forEach(b=>b.classList.toggle('active',b.dataset.jump===key));const nav=document.getElementById('officeJumpNav');const y=target.getBoundingClientRect().top+window.scrollY-(nav?.offsetHeight||52)-12;window.scrollTo({top:Math.max(0,y),behavior:'smooth'});target.classList.add('office-jump-focus');setTimeout(()=>target.classList.remove('office-jump-focus'),900)};
-function apply(){if(busy)return;busy=true;try{relocate();ensureNav();refreshButtons()}finally{busy=false}}
-function install(){apply();if(observer)return;observer=new MutationObserver(()=>setTimeout(apply,0));observer.observe(document.body,{childList:true,subtree:true});document.querySelector('nav button[data-page="more"]')?.addEventListener('click',()=>setTimeout(()=>{apply();window.scrollTo({top:0,behavior:'auto'})},0))}
+function officeTarget(key){if(key==='money')return firstOffice(c=>/invoice|estimate|bill|payment|finance/i.test(heading(c))||c.id==='payablesCard');if(key==='approvals')return firstOffice(c=>/^approvals$/i.test(heading(c)));if(key==='activity')return firstOffice(c=>/recent activity|activity/i.test(heading(c)));if(key==='playbook')return firstOffice(c=>/playbook/i.test(heading(c)));if(key==='companies')return firstOffice(c=>/^companies$/i.test(heading(c)));return null}
+function settingsTarget(key){const page=settingsPage();if(!page)return null;if(key==='account')return document.querySelector('#settingsHome .card');if(key==='security')return document.getElementById('officeSecurityCenter')||document.getElementById('sg-security');if(key==='data')return [...page.querySelectorAll('.card')].find(c=>heading(c)==='Data')||null;if(key==='app')return page.querySelector('.settings-shell');return null}
+function makeNav(id,items,handler,label){let nav=document.getElementById(id);if(nav)return nav;const page=id==='officeJumpNav'?office():settingsPage();if(!page)return null;nav=document.createElement('div');nav.id=id;nav.className='office-jump-nav';nav.setAttribute('aria-label',label);nav.innerHTML=items.map(([key,text])=>`<button type="button" class="office-jump-btn" data-jump="${key}" onclick="${handler}('${key}')">${text}</button>`).join('');page.querySelector('h1')?.insertAdjacentElement('afterend',nav);return nav}
+function refreshNav(nav,items,targetFn){if(!nav)return;for(const [key] of items){const btn=nav.querySelector(`[data-jump="${key}"]`);if(btn)btn.hidden=!targetFn(key)}}
+function jump(target,nav,key){if(!target)return;nav?.querySelectorAll('.office-jump-btn').forEach(b=>b.classList.toggle('active',b.dataset.jump===key));const y=target.getBoundingClientRect().top+window.scrollY-(nav?.offsetHeight||52)-12;window.scrollTo({top:Math.max(0,y),behavior:'smooth'});target.classList.add('office-jump-focus');setTimeout(()=>target.classList.remove('office-jump-focus'),900)}
+window.officeJumpTo=function(key){const nav=document.getElementById('officeJumpNav');jump(officeTarget(key),nav,key)};
+window.settingsJumpTo=function(key){const nav=document.getElementById('settingsJumpNav');jump(settingsTarget(key),nav,key)};
+function apply(){if(busy)return;busy=true;try{relocate();const on=makeNav('officeJumpNav',OFFICE_JUMPS,'officeJumpTo','Office page navigation');const sn=makeNav('settingsJumpNav',SETTINGS_JUMPS,'settingsJumpTo','Settings page navigation');refreshNav(on,OFFICE_JUMPS,officeTarget);refreshNav(sn,SETTINGS_JUMPS,settingsTarget)}finally{busy=false}}
+function install(){apply();if(observer)return;observer=new MutationObserver(()=>setTimeout(apply,0));observer.observe(document.body,{childList:true,subtree:true});document.querySelector('nav button[data-page="more"]')?.addEventListener('click',()=>setTimeout(()=>{apply();window.scrollTo({top:0,behavior:'auto'})},0));document.querySelector('nav button[data-page="settings"]')?.addEventListener('click',()=>setTimeout(()=>{apply();window.scrollTo({top:0,behavior:'auto'})},0))}
 setTimeout(install,900);
 })();
