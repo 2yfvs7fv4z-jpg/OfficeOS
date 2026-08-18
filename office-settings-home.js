@@ -1,18 +1,37 @@
 (function(){
 'use strict';
 function el(id){return document.getElementById(id)}
-function ensure(){
- if(!el('settings')&&typeof window.renderSettingsPage==='function')window.renderSettingsPage();
- const page=el('settings'),nav=document.querySelector('nav');if(!page||!nav)return false;
- let btn=nav.querySelector('button[data-page="settings"]');
- if(!btn){btn=document.createElement('button');btn.dataset.page='settings';btn.innerHTML='<span class="icon">⚙</span>Settings';nav.appendChild(btn);btn.addEventListener('click',()=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));page.classList.add('active');btn.classList.add('active');window.scrollTo({top:0,behavior:'auto'});window.renderSettingsPage?.();setTimeout(organize,0)})}
- nav.style.gridTemplateColumns='repeat(6,1fr)';
- let host=el('settingsOrganized');if(!host){host=document.createElement('div');host.id='settingsOrganized';el('settingsHome')?.insertAdjacentElement('afterend',host)}
- let companyCard=el('companyWorkflowSettings');if(!companyCard){companyCard=document.createElement('div');companyCard.id='companyWorkflowSettings';companyCard.className='card relocated-card';companyCard.innerHTML='<div class="kicker">Company Workflow</div><h2>Jobs & Automation</h2><p class="muted">Rules for job completion, field photos and automatic invoicing for the selected company.</p><div id="companyWorkflowSettingsBody"></div>';host?.appendChild(companyCard)}
- const body=el('companyWorkflowSettingsBody');for(const id of ['pbPhotoPolicy','pbCompletionInvoicePolicy']){const x=el(id);if(x&&body&&x.parentElement!==body)body.appendChild(x)}
- window.refreshOfficeOrganization?.();return true
+function ensureSettingsVisible(){
+  if(typeof window.renderSettingsPage==='function')window.renderSettingsPage();
+  const page=el('settings'),nav=document.querySelector('nav');
+  if(!page||!nav)return false;
+  let btn=nav.querySelector('button[data-page="settings"]');
+  if(!btn){
+    btn=document.createElement('button');
+    btn.dataset.page='settings';
+    btn.innerHTML='<span class="icon">⚙</span>Settings';
+    nav.appendChild(btn);
+  }
+  if(!btn.dataset.officeBound){
+    btn.dataset.officeBound='1';
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+      page.classList.add('active');btn.classList.add('active');
+      window.renderSettingsPage?.();
+      window.refreshOfficeOrganization?.();
+      window.scrollTo({top:0,behavior:'auto'});
+    });
+  }
+  const oldOfficeSection=el('officeSettingsSection');if(oldOfficeSection)oldOfficeSection.remove();
+  nav.style.gridTemplateColumns='repeat(6,minmax(0,1fr))';
+  return true;
 }
-function organize(){ensure()}
-let tries=0;const timer=setInterval(()=>{tries++;if(ensure()&&tries>8)clearInterval(timer);if(tries>30)clearInterval(timer)},250);
-const observer=new MutationObserver(()=>setTimeout(organize,0));setTimeout(()=>observer.observe(document.body,{childList:true,subtree:true}),700);
+function loadPayroll(){
+  if(document.querySelector('script[data-office-payroll]'))return;
+  const s=document.createElement('script');s.src='payroll.js?v=1';s.dataset.officePayroll='1';document.body.appendChild(s);
+}
+let tries=0;const timer=setInterval(()=>{tries++;if(ensureSettingsVisible()||tries>30){if(tries>30||el('settings'))clearInterval(timer)}},200);
+setTimeout(loadPayroll,900);
+const baseRender=window.render;if(typeof baseRender==='function')window.render=function(){const r=baseRender.apply(this,arguments);setTimeout(ensureSettingsVisible,0);return r};
 })();
