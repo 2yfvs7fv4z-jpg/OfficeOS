@@ -20,9 +20,11 @@ document.addEventListener('click',e=>{const node=e.target.closest?.('[data-offic
 window.addEventListener('error',e=>{const t=e?.target;if(t instanceof HTMLElement&&t.closest?.('button'))console.error('[OfficeOS] Button action error',e.error||e.message)});
 window.addEventListener('unhandledrejection',e=>console.error('[OfficeOS] Unhandled action error',e.reason));
 const observer=new MutationObserver(records=>{for(const rec of records){rec.addedNodes.forEach(n=>{if(!(n instanceof HTMLElement))return;check(n);scan(n)})}});
-function loadBatchImport(){if(document.querySelector('script[data-office-batch-import]'))return;const s=document.createElement('script');s.src='/batch-import.js?v=1';s.dataset.officeBatchImport='1';s.defer=true;document.body.appendChild(s)}
-function loadJobPhotos(){if(!document.querySelector('link[data-office-job-photos]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/job-photos.css?v=1';l.dataset.officeJobPhotos='1';document.head.appendChild(l)}if(document.querySelector('script[data-office-job-photos]'))return;const s=document.createElement('script');s.src='/job-photos.js?v=1';s.dataset.officeJobPhotos='1';s.defer=true;document.body.appendChild(s)}
-function start(){scan();observer.observe(document.body,{childList:true,subtree:true});loadBatchImport();loadJobPhotos();setTimeout(scan,1200);setTimeout(scan,3000)}
+function loadScriptOnce(attr,src){if(document.querySelector(`script[${attr}]`))return;const s=document.createElement('script');s.src=src;s.setAttribute(attr,'1');s.defer=true;document.body.appendChild(s)}
+function loadBatchImport(){loadScriptOnce('data-office-batch-import','/batch-import.js?v=1')}
+function loadActions(){loadScriptOnce('data-office-actions','/app-actions.js?v=1')}
+function loadJobPhotos(){if(!document.querySelector('link[data-office-job-photos]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/job-photos.css?v=1';l.dataset.officeJobPhotos='1';document.head.appendChild(l)}loadScriptOnce('data-office-job-photos','/job-photos.js?v=1')}
+function start(){scan();observer.observe(document.body,{childList:true,subtree:true});loadActions();loadBatchImport();loadJobPhotos();setTimeout(scan,1200);setTimeout(scan,3000)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 window.OfficeOSInteractionHealth={scan,getBroken:()=>[...broken.entries()].map(([node,handler])=>({handler,text:(node.textContent||'').trim().slice(0,80)})),getUnverified:()=>[...document.querySelectorAll('button[data-office-audit="unverified"]')].map(node=>(node.textContent||'').trim().slice(0,80))};
 })();
