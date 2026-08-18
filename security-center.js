@@ -9,7 +9,14 @@ function remembered(){return localStorage.getItem(REMEMBER_KEY)!=='0'}
 function stamp(){const raw=localStorage.getItem(LAST_VERIFY_KEY);if(!raw)return'Not checked yet';const d=new Date(raw);return Number.isNaN(d.getTime())?'Not checked yet':d.toLocaleString()}
 function hasAuth(){return typeof supabaseClient!=='undefined'&&!!supabaseClient?.auth}
 function statusMarkup(){return `<div class="card" id="officeSecurityCenter"><div class="row between"><div><div class="kicker">Security Center</div><h2>Account & Device</h2></div><span class="sync ok">Protected</span></div><div class="item"><div class="row between"><div><b>Secure connection</b><div class="muted">${location.protocol==='https:'?'HTTPS is active on officeospro.com':'This connection is not secure'}</div></div><span>${location.protocol==='https:'?'🔒':'⚠️'}</span></div></div><div class="item"><div class="row between"><div><b>Remember this device</b><div class="muted">${remembered()?'This trusted device can keep you signed in.':'This device uses a temporary sign-in.'}</div></div><span class="tag">${remembered()?'On':'Off'}</span></div></div><div class="item"><b>Session verification</b><div class="muted">Last checked: <span id="officeLastVerify">${stamp()}</span></div><div id="officeVerifyResult" class="muted" style="margin-top:6px"></div></div><button id="officeVerifyButton" class="secondary full" onclick="officeVerifySessionNow()">Verify My Session</button><button class="secondary full" style="margin-top:8px" onclick="officeSendPasswordReset()">Send Password Reset Email</button><button class="danger full" style="margin-top:8px" onclick="officeForgetThisDevice()">Forget This Device</button><p class="muted" style="margin-top:10px">For shared or public devices, turn off “Remember me” at sign-in or use Forget This Device when finished.</p></div>`}
-function install(){const more=el('more');if(!more||el('officeSecurityCenter'))return;const account=[...more.querySelectorAll('.card')].find(c=>c.querySelector('h2')?.textContent.trim()==='Account');if(account)account.insertAdjacentHTML('afterend',statusMarkup());else more.insertAdjacentHTML('afterbegin',statusMarkup())}
+function install(){
+ if(el('officeSecurityCenter'))return;
+ const settingsHost=el('settingsOrganized')||el('settingsHome');
+ if(settingsHost){settingsHost.insertAdjacentHTML('afterbegin',statusMarkup());return;}
+ const more=el('more');if(!more)return;
+ const account=[...more.querySelectorAll('.card')].find(c=>c.querySelector('h2')?.textContent.trim()==='Account');
+ if(account)account.insertAdjacentHTML('afterend',statusMarkup());else more.insertAdjacentHTML('afterbegin',statusMarkup())
+}
 window.officeVerifySessionNow=async function(){
  const btn=el('officeVerifyButton'),result=el('officeVerifyResult');
  if(!hasAuth()){
