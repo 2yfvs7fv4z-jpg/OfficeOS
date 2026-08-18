@@ -1,8 +1,8 @@
 (function(){
 function el(id){return document.getElementById(id)}
 function loadOfficeTabs(){
- if(!document.querySelector('link[data-office-tabs]')){const l=document.createElement('link');l.rel='stylesheet';l.href='office-tabs.css?v=1';l.dataset.officeTabs='1';document.head.appendChild(l)}
- if(!document.querySelector('script[data-office-tabs]')){const s=document.createElement('script');s.src='office-tabs.js?v=1';s.dataset.officeTabs='1';document.body.appendChild(s)}
+ if(!document.querySelector('link[data-office-tabs]')){const l=document.createElement('link');l.rel='stylesheet';l.href='office-tabs.css?v=3';l.dataset.officeTabs='1';document.head.appendChild(l)}
+ if(!document.querySelector('script[data-office-tabs]')){const s=document.createElement('script');s.src='office-tabs.js?v=3';s.dataset.officeTabs='1';document.body.appendChild(s)}
 }
 function install(){
  if(el('permissionsQuickCard'))return;
@@ -16,9 +16,9 @@ function install(){
  if(first)first.insertAdjacentElement('afterend',card);else office.prepend(card);
 }
 window.openOfficePermissions=function(){
- if(typeof window.officeShowTab==='function')window.officeShowTab('team');
+ if(typeof window.officeJumpTo==='function'){window.officeJumpTo('team');return;}
  const target=el('teamPermissionsCard');
- if(target){setTimeout(()=>{target.scrollIntoView({behavior:'smooth',block:'start'});target.classList.add('permissions-focus');setTimeout(()=>target.classList.remove('permissions-focus'),1200)},40);return;}
+ if(target){target.scrollIntoView({behavior:'smooth',block:'start'});target.classList.add('permissions-focus');setTimeout(()=>target.classList.remove('permissions-focus'),1200);return;}
  alert('Permissions are loading. Please try again in a moment.');
 };
 const style=document.createElement('style');
