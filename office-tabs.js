@@ -1,9 +1,13 @@
 (function(){
 const JUMPS=[
-  ['overview','Overview'],
+  ['account','Account'],
+  ['security','Security'],
   ['money','Money'],
-  ['business','Business'],
-  ['account','Account']
+  ['approvals','Approvals'],
+  ['activity','Activity'],
+  ['playbook','Playbook'],
+  ['companies','Companies'],
+  ['data','Data']
 ];
 let observer=null,busy=false;
 function office(){return document.getElementById('more')}
@@ -20,10 +24,14 @@ function relocate(){
   if(tasks&&dashboard&&!tasks.dataset.relocated){tasks.dataset.relocated='home';tasks.classList.add('relocated-card');const action=document.getElementById('actionCenter')?.closest('.card');if(action)action.insertAdjacentElement('afterend',tasks);else dashboard.appendChild(tasks)}
 }
 function targetFor(key){
-  if(key==='overview')return firstMatching(c=>!c.dataset.relocated);
+  if(key==='account')return firstMatching(c=>/^account$/i.test(heading(c)));
+  if(key==='security')return firstMatching(c=>/security|device/i.test(heading(c))||/security/i.test(c.id||''));
   if(key==='money')return firstMatching(c=>/invoice|estimate|bill|payment|finance/i.test(heading(c))||c.id==='payablesCard');
-  if(key==='business')return firstMatching(c=>/playbook|companies|data|template/i.test(heading(c)));
-  if(key==='account')return firstMatching(c=>/account|security|device/i.test(heading(c))||/security/i.test(c.id||''));
+  if(key==='approvals')return firstMatching(c=>/^approvals$/i.test(heading(c)));
+  if(key==='activity')return firstMatching(c=>/recent activity|activity/i.test(heading(c)));
+  if(key==='playbook')return firstMatching(c=>/playbook/i.test(heading(c)));
+  if(key==='companies')return firstMatching(c=>/^companies$/i.test(heading(c)));
+  if(key==='data')return firstMatching(c=>/^data$/i.test(heading(c))||/migration|import/i.test(heading(c)));
   return null;
 }
 function ensureNav(){const o=office();if(!o)return null;let nav=document.getElementById('officeJumpNav');if(nav)return nav;nav=document.createElement('div');nav.id='officeJumpNav';nav.className='office-jump-nav';nav.setAttribute('aria-label','Office page navigation');nav.innerHTML=JUMPS.map(([key,label])=>`<button type="button" class="office-jump-btn" data-jump="${key}" onclick="officeJumpTo('${key}')">${label}</button>`).join('');o.querySelector('h1')?.insertAdjacentElement('afterend',nav);return nav}
