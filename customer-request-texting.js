@@ -1,0 +1,8 @@
+(function(){
+'use strict';
+function selected(){return typeof current==='function'&&current()!=='all'?company():null}
+function url(){return selected()?.playbook?.customerRequestUrl||''}
+window.officeTextRequestLink=function(){const c=selected(),u=url();if(!c)return alert('Select one company first.');if(!u)return alert('Create the customer request link first.');if(typeof window.officeSmsCompose!=='function')return alert('OfficeOS texting is still loading.');window.officeSmsCompose({companyRef:c.id,title:'Text Request Link',message:`Hi! Please tell us about your project using our secure request form: ${u}\n\nThank you,\n${c.name||'Our team'}`})}
+function decorate(){const card=document.getElementById('customerRequestSettings');if(!card||!url()||card.querySelector('[data-text-request-link]'))return;const copy=[...card.querySelectorAll('button')].find(b=>(b.textContent||'').trim()==='Copy Link');if(!copy)return;const b=document.createElement('button');b.type='button';b.className='secondary';b.dataset.textRequestLink='1';b.textContent='Text Link';b.onclick=window.officeTextRequestLink;copy.insertAdjacentElement('afterend',b)}
+const obs=new MutationObserver(()=>decorate());function start(){decorate();obs.observe(document.body,{childList:true,subtree:true});document.getElementById('companySelect')?.addEventListener('change',()=>setTimeout(decorate,100))}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
