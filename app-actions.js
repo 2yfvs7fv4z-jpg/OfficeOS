@@ -32,12 +32,14 @@ window.officeRefreshAll=async function(btn){
 };
 window.officeRefreshActionCenter=async function(btn){const ok=await window.officeRefreshAll(btn);if(ok)window.renderActionCenter?.();return ok};
 function wireRefreshButtons(){document.querySelectorAll('button').forEach(btn=>{if(btn.dataset.officeRefreshBound)return;const label=(btn.textContent||'').trim().toLowerCase();if(label!=='refresh')return;btn.dataset.officeRefreshBound='1';btn.onclick=null;btn.addEventListener('click',()=>window.officeRefreshAll(btn))})}
-function loadFieldSync(){if(document.querySelector('script[data-office-field-sync]'))return;const s=document.createElement('script');s.src='/field-job-auto-sync.js?v=2';s.defer=true;s.dataset.officeFieldSync='1';document.body.appendChild(s)}
-function loadCommunications(){if(!document.querySelector('link[data-office-communications]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/communications.css?v=1';l.dataset.officeCommunications='1';document.head.appendChild(l)}if(document.querySelector('script[data-office-communications]'))return;const s=document.createElement('script');s.src='/communications.js?v=1';s.defer=true;s.dataset.officeCommunications='1';document.body.appendChild(s)}
-function loadEstimates(){if(document.querySelector('script[data-office-estimates]'))return;const s=document.createElement('script');s.src='/estimates.js?v=1';s.defer=true;s.dataset.officeEstimates='1';document.body.appendChild(s)}
-function loadPayments(){if(document.querySelector('script[data-office-payments]'))return;const s=document.createElement('script');s.src='/payment-reconciliation.js?v=1';s.defer=true;s.dataset.officePayments='1';document.body.appendChild(s)}
-function loadCustomerRequests(){if(document.querySelector('script[data-office-customer-requests]'))return;const s=document.createElement('script');s.src='/customer-request-admin.js?v=1';s.defer=true;s.dataset.officeCustomerRequests='1';document.body.appendChild(s)}
+function loadScript(src,key){if(document.querySelector(`script[data-office-${key}]`))return;const s=document.createElement('script');s.src=src;s.defer=true;s.dataset[`office${key.replace(/(^|-)(\w)/g,(_,a,b)=>b.toUpperCase())}`]='1';s.setAttribute(`data-office-${key}`,'1');document.body.appendChild(s)}
+function loadFieldSync(){loadScript('/field-job-auto-sync.js?v=2','field-sync')}
+function loadCommunications(){if(!document.querySelector('link[data-office-communications]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/communications.css?v=1';l.dataset.officeCommunications='1';document.head.appendChild(l)}loadScript('/communications.js?v=2','communications')}
+function loadEstimates(){loadScript('/estimates.js?v=1','estimates')}
+function loadPayments(){loadScript('/payment-reconciliation.js?v=1','payments')}
+function loadCustomerRequests(){loadScript('/customer-request-admin.js?v=1','customer-requests');setTimeout(()=>loadScript('/customer-request-texting.js?v=1','customer-request-texting'),250)}
+function loadSms(){loadScript('/office-sms.js?v=1','sms')}
 const observer=new MutationObserver(()=>wireRefreshButtons());
-function start(){wireRefreshButtons();observer.observe(document.body,{childList:true,subtree:true});setTimeout(loadCommunications,1100);setTimeout(loadEstimates,1350);setTimeout(loadPayments,1550);setTimeout(loadCustomerRequests,1700);setTimeout(loadFieldSync,1900)}
+function start(){wireRefreshButtons();observer.observe(document.body,{childList:true,subtree:true});setTimeout(loadSms,800);setTimeout(loadCommunications,1100);setTimeout(loadEstimates,1350);setTimeout(loadPayments,1550);setTimeout(loadCustomerRequests,1700);setTimeout(loadFieldSync,1900)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
