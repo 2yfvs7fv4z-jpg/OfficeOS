@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 const el=id=>document.getElementById(id);let timer=null;
-async function companyUuid(localId){const {data}=await supabaseClient.from('companies').select('id').eq('legacy_company_id',localId).maybeSingle();return data?.id||null}
+async function companyUuid(localId){const {data:{session}}=await supabaseClient.auth.getSession();if(!session?.user)return null;const {data}=await supabaseClient.from('companies').select('id').eq('owner_id',session.user.id).eq('external_ref',String(localId)).maybeSingle();return data?.id||null}
 function age(ts){if(!ts)return'No recent ping';const m=Math.max(0,Math.floor((Date.now()-Date.parse(ts))/60000));return m<1?'Just now':m===1?'1 min ago':`${m} min ago`}
 function statusText(s){return({working:'Working',en_route:'En route',at_job:'At job',paused:'Paused',ended:'Ended'})[s]||'Working'}
 function mapsUrl(x){return `https://www.google.com/maps?q=${encodeURIComponent(x.latitude+','+x.longitude)}`}
