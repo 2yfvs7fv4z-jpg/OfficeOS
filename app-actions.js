@@ -35,7 +35,8 @@ function wireRefreshButtons(){document.querySelectorAll('button').forEach(btn=>{
 function loadFieldSync(){if(document.querySelector('script[data-office-field-sync]'))return;const s=document.createElement('script');s.src='/field-job-auto-sync.js?v=2';s.defer=true;s.dataset.officeFieldSync='1';document.body.appendChild(s)}
 function loadCommunications(){if(!document.querySelector('link[data-office-communications]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/communications.css?v=1';l.dataset.officeCommunications='1';document.head.appendChild(l)}if(document.querySelector('script[data-office-communications]'))return;const s=document.createElement('script');s.src='/communications.js?v=1';s.defer=true;s.dataset.officeCommunications='1';document.body.appendChild(s)}
 function loadEstimates(){if(document.querySelector('script[data-office-estimates]'))return;const s=document.createElement('script');s.src='/estimates.js?v=1';s.defer=true;s.dataset.officeEstimates='1';document.body.appendChild(s)}
+function loadPayments(){if(document.querySelector('script[data-office-payments]'))return;const s=document.createElement('script');s.src='/payment-reconciliation.js?v=1';s.defer=true;s.dataset.officePayments='1';document.body.appendChild(s)}
 const observer=new MutationObserver(()=>wireRefreshButtons());
-function start(){wireRefreshButtons();observer.observe(document.body,{childList:true,subtree:true});setTimeout(loadCommunications,1100);setTimeout(loadEstimates,1350);setTimeout(loadFieldSync,1800)}
+function start(){wireRefreshButtons();observer.observe(document.body,{childList:true,subtree:true});setTimeout(loadCommunications,1100);setTimeout(loadEstimates,1350);setTimeout(loadPayments,1550);setTimeout(loadFieldSync,1800)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
