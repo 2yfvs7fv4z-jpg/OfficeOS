@@ -31,7 +31,8 @@ window.officeRefreshAll=async function(btn){
 };
 window.officeRefreshActionCenter=async function(btn){const ok=await window.officeRefreshAll(btn);if(ok)window.renderActionCenter?.();return ok};
 function wireRefreshButtons(){document.querySelectorAll('button').forEach(btn=>{if(btn.dataset.officeRefreshBound)return;const label=(btn.textContent||'').trim().toLowerCase();if(label!=='refresh')return;btn.dataset.officeRefreshBound='1';btn.onclick=null;btn.addEventListener('click',()=>window.officeRefreshAll(btn))})}
+function loadFieldSync(){if(document.querySelector('script[data-office-field-sync]'))return;const s=document.createElement('script');s.src='/field-job-auto-sync.js?v=2';s.defer=true;s.dataset.officeFieldSync='1';document.body.appendChild(s)}
 const observer=new MutationObserver(()=>wireRefreshButtons());
-function start(){wireRefreshButtons();observer.observe(document.body,{childList:true,subtree:true})}
+function start(){wireRefreshButtons();observer.observe(document.body,{childList:true,subtree:true});setTimeout(loadFieldSync,1800)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
