@@ -1,0 +1,6 @@
+(function(){
+'use strict';
+function bind(){const file=document.getElementById('importFile'),qb=document.getElementById('connectQuickBooks'),shop=document.getElementById('connectShopify');if(!file)return;if(qb&&!qb.dataset.fixed){qb.dataset.fixed='1';qb.textContent='Import QuickBooks File';qb.onclick=()=>{document.querySelector('.import-source-btn[data-source="QuickBooks"]')?.click()}}if(shop&&!shop.dataset.fixed){shop.dataset.fixed='1';shop.textContent='Import Shopify File';shop.onclick=()=>{document.querySelector('.import-source-btn[data-source="Shopify"]')?.click()}}document.querySelectorAll('.import-source-btn').forEach(b=>{if(b.dataset.fileFixed)return;b.dataset.fileFixed='1';b.onclick=()=>{const source=b.dataset.source;document.querySelectorAll('.import-source-btn').forEach(x=>x.classList.toggle('active',x===b));file.dataset.source=source||'Generic';file.value='';file.click()}});const label=document.querySelector('label[for="importFile"]');if(label){const span=label.querySelector('span');if(span)span.textContent='QuickBooks, Shopify, CSV or Excel — review before import.'}}
+}
+setTimeout(bind,1800);new MutationObserver(()=>setTimeout(bind,20)).observe(document.body,{childList:true,subtree:true});
+})();
