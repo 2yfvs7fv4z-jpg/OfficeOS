@@ -1,5 +1,5 @@
-const CACHE='officeos-shell-v25';
-const SHELL=['/','/index.html','/styles.css','/search.css','/billing.css','/insights.css','/invoice-pro.css','/invoice-branding.css','/officeos-plus.css','/app.js','/calendar.js','/search.js','/billing.js','/insights.js','/invoice-pro.js','/invoice-email-v23.js','/invoice-branding.js','/officeos-plus.js','/manifest.webmanifest','/officeos-icon.svg','/payment-pending.html'];
+const CACHE='officeos-shell-v26';
+const SHELL=['/','/index.html','/styles.css','/search.css','/billing.css','/insights.css','/invoice-pro.css','/invoice-branding.css','/officeos-plus.css','/communications.css','/team-access.css','/employee-workspace.css','/app.js','/calendar.js','/search.js','/billing.js','/insights.js','/invoice-pro.js','/invoice-email-v23.js','/invoice-branding.js','/officeos-plus.js','/communications.js','/team-access.js','/customer-portal-admin.js','/app-actions.js','/portal.html','/manifest.webmanifest','/officeos-icon.svg','/payment-pending.html'];
 
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).catch(()=>null).then(()=>self.skipWaiting()));
