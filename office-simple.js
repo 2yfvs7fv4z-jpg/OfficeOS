@@ -1,0 +1,9 @@
+(function(){'use strict';
+const sections=[['customers','Customers'],['money','Estimates & Invoices'],['tasks','Tasks'],['approvals','Approvals'],['activity','Activity'],['playbook','Playbook'],['companies','Companies'],['data','Data']];
+function cards(){return [...document.querySelectorAll('#more > .card')]}
+function classify(card){const h=(card.querySelector('h2')?.textContent||'').toLowerCase();if(h==='customers')return'customers';if(/estimates|invoices/.test(h))return'money';if(h==='tasks')return'tasks';if(h==='approvals')return'approvals';if(/recent activity/.test(h))return'activity';if(/company playbook/.test(h))return'playbook';if(h==='companies')return'companies';if(h==='data')return'data';if(h==='account')return'account';return''}
+function show(key){cards().forEach(c=>{const k=classify(c);c.hidden=!!k&&!['account',key].includes(k)});document.querySelectorAll('#officeSimpleTabs button').forEach(b=>b.classList.toggle('active',b.dataset.officeSection===key));sessionStorage.setItem('officeos-office-section',key);window.scrollTo({top:0,behavior:'auto'})}
+window.officeShowSection=show;
+function install(){const page=document.getElementById('more');if(!page||document.getElementById('officeSimpleTabs'))return;const h=page.querySelector('h1');const tabs=document.createElement('div');tabs.id='officeSimpleTabs';tabs.className='office-simple-tabs';tabs.innerHTML=sections.map(([k,l])=>`<button type="button" data-office-section="${k}" onclick="officeShowSection('${k}')">${l}</button>`).join('');h?.insertAdjacentElement('afterend',tabs);const account=cards().find(c=>classify(c)==='account');if(account)account.hidden=true;show(sessionStorage.getItem('officeos-office-section')||'customers')}
+setTimeout(install,600);new MutationObserver(()=>{if(document.getElementById('more')&&!document.getElementById('officeSimpleTabs'))install()}).observe(document.body,{childList:true,subtree:true});
+})();
