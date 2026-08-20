@@ -1,0 +1,9 @@
+(function(){'use strict';
+function byHeading(text){return [...document.querySelectorAll('#dashboard>.card')].find(c=>(c.querySelector('h2')?.textContent||'').toLowerCase().includes(text))}
+function install(){const page=document.getElementById('dashboard');if(!page||document.getElementById('homeMoreDetails'))return;const action=byHeading('what needs you next'),brief=byHeading('daily brief'),insights=byHeading('how the business is doing'),today=byHeading('today');if(!action||!brief||!insights||!today)return;
+ const actionH=action.querySelector('h2');if(actionH)actionH.textContent='Needs Attention';const kicker=action.querySelector('.kicker');if(kicker)kicker.textContent='OfficeOS';const refresh=[...action.querySelectorAll('button')].find(b=>/refresh/i.test(b.textContent||''));if(refresh)refresh.hidden=true;
+ action.parentNode.insertBefore(today,action);
+ const more=document.createElement('details');more.id='homeMoreDetails';more.className='home-more';more.innerHTML='<summary><span><b>More from OfficeOS</b><small>Daily brief and business insights</small></span><span class="home-more-chevron">›</span></summary><div class="home-more-body"></div>';action.insertAdjacentElement('afterend',more);const body=more.querySelector('.home-more-body');body.appendChild(brief);body.appendChild(insights);
+ brief.classList.add('home-nested-card');insights.classList.add('home-nested-card');}
+setTimeout(install,850);new MutationObserver(()=>{if(document.getElementById('dashboard')&&!document.getElementById('homeMoreDetails'))setTimeout(install,20)}).observe(document.body,{childList:true,subtree:true});
+})();
