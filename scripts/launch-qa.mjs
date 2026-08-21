@@ -10,7 +10,7 @@ const failures=[],warnings=[];
 const fail=(name,detail)=>failures.push({name,detail});
 const warn=(name,detail)=>warnings.push({name,detail});
 
-const required=['index.html','app.js','app-actions.js','workflow-router.js','estimates.js','estimate-job-handoff.js','job-photos.js','job-completion-invoice.js','invoice-pro.js','invoice-email-v23.js','payment-reconciliation.js','payment-auto-sync.js','payment-guards.js','invoice-payment-guard.js','payment-success.js','payment-success-hooks.js','employee-workspace.js','field-status-pull.js','dispatch.js','service-worker.js'];
+const required=['index.html','app.js','app-actions.js','workflow-router.js','estimates.js','estimate-job-handoff.js','job-photos.js','job-completion-invoice.js','invoice-pro.js','invoice-email-v23.js','payment-reconciliation.js','payment-auto-sync.js','payment-guards.js','invoice-payment-guard.js','payment-success.js','payment-success-hooks.js','employee-workspace.js','employee-workspace.css','team-access.js','field-status-pull.js','dispatch.js','service-worker.js'];
 for(const f of required)if(!text.has(f))fail('required-file',`${f} is missing`);
 
 const all=[...text.entries()].map(([f,s])=>`\n/* ${f} */\n${s}`).join('\n');
@@ -40,7 +40,7 @@ if(!shellMatch)fail('service-worker','Could not find SHELL asset list');
 else{
   const assets=[...shellMatch[1].matchAll(/['"]([^'"]+)['"]/g)].map(m=>m[1]).filter(x=>x!=='/').map(x=>x.replace(/^\//,''));
   for(const a of assets)if(a&&!text.has(a))fail('missing-cache-asset',`service-worker caches ${a}, but the file is missing`);
-  for(const must of ['app-actions.js','estimate-job-handoff.js','field-status-pull.js','payment-guards.js','invoice-payment-guard.js','payment-success.js'])if(!assets.includes(must))fail('uncached-launch-code',`${must} is not in the PWA shell`);
+  for(const must of ['app-actions.js','estimate-job-handoff.js','field-status-pull.js','payment-guards.js','invoice-payment-guard.js','payment-success.js','employee-workspace.js','employee-workspace.css'])if(!assets.includes(must))fail('uncached-launch-code',`${must} is not in the PWA shell`);
 }
 
 const navPages=[...index.matchAll(/<button[^>]+data-page=["']([^"']+)["']/gi)].map(m=>m[1]);
@@ -48,6 +48,15 @@ const sectionPages=[...index.matchAll(/<section[^>]+id=["']([^"']+)["'][^>]*clas
 for(const p of navPages)if(!sectionPages.includes(p))fail('broken-nav-target',`Navigation points to ${p}, but no matching page section exists`);
 const navRefs=[...all.matchAll(/nav\(['"]([^'"]+)['"]\)/g)].map(m=>m[1]);
 for(const p of new Set(navRefs))if(!navPages.includes(p))fail('broken-runtime-nav',`Runtime navigation targets ${p}, but no bottom-nav button exists`);
+
+const employeeJs=text.get('employee-workspace.js')||'';
+const employeeCss=text.get('employee-workspace.css')||'';
+if(!/owned\.data\?\.length/.test(employeeJs))fail('employee-owner-bypass','Employee workspace no longer explicitly bypasses company owners');
+if(!/\['field','sales'\]/.test(employeeJs))fail('employee-role-gate','Employee workspace role gate for field/sales is missing or changed');
+if(!/company_memberships/.test(employeeJs)||!(/active['"],?true|\.eq\(['"]active['"],true\)/.test(employeeJs)))warn('employee-active-membership','Review employee membership query to ensure only active memberships enable limited access');
+for(const selector of ['>header','>main','>nav','>#fab','.ai-fab'])if(!employeeCss.includes(selector))fail('employee-ui-isolation',`employee-workspace.css no longer hides owner UI selector ${selector}`);
+if(!/Limited Access/.test(employeeJs))warn('employee-limited-label','Employee workspace no longer displays a Limited Access cue');
+if(!/assigned jobs/i.test(text.get('team-access.js')||''))warn('team-access-copy','Team Access no longer clearly states assigned-job-only field access');
 
 const onclicks=[...all.matchAll(/onclick=["'][^"']*?\b([A-Za-z_$][\w$]*)\s*\(/g)].map(m=>m[1]);
 const builtins=new Set(['alert','confirm','prompt','open','close','print']);
