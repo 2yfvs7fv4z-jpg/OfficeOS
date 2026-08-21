@@ -10,7 +10,7 @@ const failures=[],warnings=[];
 const fail=(name,detail)=>failures.push({name,detail});
 const warn=(name,detail)=>warnings.push({name,detail});
 
-const required=['index.html','app.js','app-actions.js','workflow-router.js','estimates.js','estimate-job-handoff.js','job-photos.js','job-completion-invoice.js','invoice-pro.js','invoice-email-v23.js','payment-reconciliation.js','payment-auto-sync.js','payment-guards.js','invoice-payment-guard.js','payment-success.js','payment-success-hooks.js','employee-workspace.js','employee-workspace.css','team-access.js','field-status-pull.js','dispatch.js','service-worker.js'];
+const required=['index.html','app.js','app-actions.js','workflow-router.js','estimates.js','estimate-job-handoff.js','job-photos.js','job-completion-invoice.js','invoice-pro.js','invoice-email-v23.js','payment-reconciliation.js','payment-auto-sync.js','payment-guards.js','invoice-payment-guard.js','payment-success.js','payment-success-hooks.js','office-sms.js','office-email.js','employee-workspace.js','employee-workspace.css','team-access.js','field-status-pull.js','dispatch.js','service-worker.js'];
 for(const f of required)if(!text.has(f))fail('required-file',`${f} is missing`);
 
 const all=[...text.entries()].map(([f,s])=>`\n/* ${f} */\n${s}`).join('\n');
@@ -33,6 +33,12 @@ for(const src of srcs)if(src&&!text.has(src))fail('missing-script',`index.html l
 
 const appActions=text.get('app-actions.js')||'';
 for(const src of [...appActions.matchAll(/loadScript\(['"]([^'"]+)/g)].map(m=>m[1].split('?')[0].replace(/^\//,''))){if(src&&!text.has(src))fail('missing-dynamic-script',`app-actions.js loads ${src}, but the file is missing`)}
+if(!/office-email\.js/.test(appActions))fail('customer-email-loader','Unified OfficeOS email layer is not loaded by app-actions.js');
+
+const emailJs=text.get('office-email.js')||'';
+if(!/officeos-send-email/.test(emailJs))fail('customer-email-endpoint','OfficeOS customer email layer is not wired to the authenticated email endpoint');
+if(!/officeCommCompose/.test(emailJs)||!/_officeUnified/.test(emailJs))fail('communications-email-override','Unified communications no longer overrides legacy email handoff');
+if(!/officeSmsCompose/.test(emailJs))fail('customer-text-integration','Customer quick contact no longer routes texting through OfficeOS');
 
 const sw=text.get('service-worker.js')||'';
 const shellMatch=sw.match(/const SHELL=\[(.*?)\];/s);
@@ -40,7 +46,7 @@ if(!shellMatch)fail('service-worker','Could not find SHELL asset list');
 else{
   const assets=[...shellMatch[1].matchAll(/['"]([^'"]+)['"]/g)].map(m=>m[1]).filter(x=>x!=='/').map(x=>x.replace(/^\//,''));
   for(const a of assets)if(a&&!text.has(a))fail('missing-cache-asset',`service-worker caches ${a}, but the file is missing`);
-  for(const must of ['app-actions.js','estimate-job-handoff.js','field-status-pull.js','payment-guards.js','invoice-payment-guard.js','payment-success.js','employee-workspace.js','employee-workspace.css'])if(!assets.includes(must))fail('uncached-launch-code',`${must} is not in the PWA shell`);
+  for(const must of ['app-actions.js','estimate-job-handoff.js','field-status-pull.js','payment-guards.js','invoice-payment-guard.js','payment-success.js','office-email.js','office-sms.js','employee-workspace.js','employee-workspace.css'])if(!assets.includes(must))fail('uncached-launch-code',`${must} is not in the PWA shell`);
 }
 
 const navPages=[...index.matchAll(/<button[^>]+data-page=["']([^"']+)["']/gi)].map(m=>m[1]);
