@@ -16,6 +16,8 @@ for(const f of required)if(!text.has(f))fail('required-file',`${f} is missing`);
 const all=[...text.entries()].map(([f,s])=>`\n/* ${f} */\n${s}`).join('\n');
 const badUrls=['2yfvs7fv4z-jpg.github.io/OfficeOS'];
 for(const u of badUrls)if(all.includes(u))fail('legacy-production-url',`Found old production URL: ${u}`);
+if(/buy\.stripe\.com\/test_/i.test(all))fail('test-billing-link','Stripe test Checkout link is still present in the launch build');
+if(/TEST MODE/i.test(text.get('index.html')||''))fail('test-mode-ui','Visible TEST MODE copy is still present in index.html');
 
 for(const [f,s] of text){
   if(/\bTODO\b|\bFIXME\b/i.test(s))warn('todo',`${f} contains TODO/FIXME`);
@@ -25,6 +27,7 @@ for(const [f,s] of text){
 }
 
 const index=text.get('index.html')||'';
+if(/name=["']robots["'][^>]+noindex/i.test(index))warn('search-indexing','App shell is still noindex. Keep intentionally for authenticated app, but launch needs a separate indexable public/marketing surface.');
 const srcs=[...index.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map(m=>m[1]).filter(x=>!/^https?:\/\//.test(x)).map(x=>x.split('?')[0].replace(/^\//,''));
 for(const src of srcs)if(src&&!text.has(src))fail('missing-script',`index.html loads ${src}, but the file is missing`);
 
@@ -39,6 +42,12 @@ else{
   for(const a of assets)if(a&&!text.has(a))fail('missing-cache-asset',`service-worker caches ${a}, but the file is missing`);
   for(const must of ['app-actions.js','estimate-job-handoff.js','field-status-pull.js','payment-guards.js','invoice-payment-guard.js','payment-success.js'])if(!assets.includes(must))fail('uncached-launch-code',`${must} is not in the PWA shell`);
 }
+
+const navPages=[...index.matchAll(/<button[^>]+data-page=["']([^"']+)["']/gi)].map(m=>m[1]);
+const sectionPages=[...index.matchAll(/<section[^>]+id=["']([^"']+)["'][^>]*class=["'][^"']*\bpage\b/gi)].map(m=>m[1]);
+for(const p of navPages)if(!sectionPages.includes(p))fail('broken-nav-target',`Navigation points to ${p}, but no matching page section exists`);
+const navRefs=[...all.matchAll(/nav\(['"]([^'"]+)['"]\)/g)].map(m=>m[1]);
+for(const p of new Set(navRefs))if(!navPages.includes(p))fail('broken-runtime-nav',`Runtime navigation targets ${p}, but no bottom-nav button exists`);
 
 const onclicks=[...all.matchAll(/onclick=["'][^"']*?\b([A-Za-z_$][\w$]*)\s*\(/g)].map(m=>m[1]);
 const builtins=new Set(['alert','confirm','prompt','open','close','print']);
