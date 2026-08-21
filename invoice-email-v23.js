@@ -7,7 +7,7 @@ function emailPayload(x){
   const businessName=companyName(x.company);
   const normalizedLines=rawLines.map(l=>({description:String(l.description||''),qty:Number(l.qty||0),rate:Number(l.rate||0)}));
   const lineItems=normalizedLines.map(l=>({description:l.description,quantity:Number(l.qty||0),unitPrice:Number(l.rate||0),rate:Number(l.rate||0),amount:Number(l.qty||0)*Number(l.rate||0)}));
-  const fallbackPaymentUrl='https://2yfvs7fv4z-jpg.github.io/OfficeOS/payment-pending.html';
+  const fallbackPaymentUrl='https://officeospro.com/payment-pending.html';
   const paymentUrl=String(x.paymentUrl||'').trim()||fallbackPaymentUrl;
   return{to:recipientEmail,recipientEmail,customer:x.customer,customerName:x.customer,company:businessName,businessName,number:x.number,invoiceNumber:x.number,issueDate:x.issueDate,dueDate:x.dueDate,subtotal:Number(subtotal),taxRate:Number(x.taxRate||0),amount:Number(x.amount||0),total:Number(x.amount||0),lines:normalizedLines,lineItems,notes:x.notes||'',paymentUrl,replyTo:currentUser?.email||''}
 }
